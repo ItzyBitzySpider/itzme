@@ -23,7 +23,7 @@ class Block {
     }
 }
 
-class Chain { 
+export class Chain { 
     static instance = new Chain();
 
     constructor() {
@@ -40,10 +40,14 @@ class Chain {
         this.chain.push(newBlock);
         return newBlock.txNo;
     }
+
+    find(blockNo) {
+        return this.chain[blockNo];
+    }
   
 }
 
-export default class Issuer{
+export class Issuer{
     constructor(issuerId, privateKey){
         this.issuerId = issuerId;
         this.privateKey = privateKey;
@@ -66,8 +70,8 @@ export default class Issuer{
         const encryptedData = crypto.publicEncrypt(keypair.publicKey, Buffer.from(data));
         
         const signature = crypto.sign('sha256', encryptedData, this.privateKey);
-        let result = await Chain.instance.addBlock(encryptedData, 'identity', 'id', signature);
-        return keypair.privateKey;
+        let blockNo = await Chain.instance.addBlock(encryptedData, 'identity', 'id', signature);
+        return [keypair.privateKey, blockNo];
     }   
 }
 

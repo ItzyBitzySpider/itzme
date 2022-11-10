@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import express from 'express';
-import Issuer from '../chain/chain.js';
+import {Issuer, Chain} from '../chain/chain.js';
 
 let issuer;
 
@@ -10,6 +10,7 @@ const port = 3000;
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
+// Issuer Endpoints
 app.get('/createIssuer', (req, res) => {
 	const keypair = crypto.generateKeyPairSync('dsa', {
 		modulusLength: 2048,
@@ -29,10 +30,22 @@ app.get('/createIssuer', (req, res) => {
 });
 
 app.get('/createIdentity', async (req, res) => {
-    const key = await issuer.issueIdentity('test');
-    res.send('Identity issued. Please save your private key.' + JSON.stringify(key));
+	if(!issuer){
+		res.send('No Issuer');
+		return;
+	}
+    const result = await issuer.issueIdentity('test');
+    res.send({'message':'Identity issued. Please save your private key.', 'privateKey': result[0], 'blockNo': result[1]});
 });
 
-app.get('/getIdentity', )
+// General Endpoints
+app.get('/getData', async (req, res) => {
+	const result = await Chain.instance.find(req.query.blockNo);
+	console.log(result);
+	console.log('hi')
+	res.send(result);
+});
+
+
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
