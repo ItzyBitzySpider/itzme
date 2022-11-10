@@ -15,20 +15,24 @@ const port = 3000;
 app.get('/', (req, res) => res.send('Hello World!'));
 
 // Issuer Endpoints
-app.get('/createIdentity', async (req, res) => {
+app.get('/issueIdentity', async (req, res) => {
 	if(!issuer){
-		res.send('No Issuer');
+		res.send({'message':'No Issuer'});
 		return;
 	}
-    const result = await issuer.issueIdentity('test');
+    const result = await issuer.issueIdentity({'test':'data'});
     res.send({'message':'Identity issued. Please save your private key.', 'privateKey': result[0], 'blockNo': result[1]});
 });
 
 // General Endpoints
 app.get('/getData', async (req, res) => {
 	const result = await Chain.instance.find(req.query.blockNo);
-	console.log(result);
-	console.log('hi')
+	console.log('/getData Endpoint', result);
+	console.log(typeof(result));
+	if(result === null){
+		res.send({'message':'Block not found'});
+		return;
+	}
 	res.send(result);
 });
 
