@@ -12,16 +12,39 @@ const issuer = new Issuer(config.txNo, crypto.createPrivateKey(config.privateKey
 const app = express();
 const port = 3000;
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (req, res) => res.json({'message':'Hello World!'}));
 
 // Issuer Endpoints
 app.get('/issueIdentity', async (req, res) => {
 	if(!issuer){
-		res.send({'message':'No Issuer'});
+		res.json({'message':'No Issuer'});
 		return;
 	}
-    const result = await issuer.issueIdentity({'test':'data'});
-    res.send({'message':'Identity issued. Please save your private key.', 'privateKey': result[0], 'blockNo': result[1]});
+    const result = await issuer.issueIdentity({'IdentityNumber':0, 'Name':'John Doe'});
+	if (result[1] === -1) {
+		res.json({'message':'Error. Signature Invalid.'});
+		return;
+	}
+    res.json({'message':'Identity issued. Please save your private key.', 'privateKey': result[0], 'blockNo': result[1]});
+});
+
+app.get('/createIssuer', async (req, res) => {
+	const name = req.query.name;
+	const createIssuer = req.query.createIssuer === 'true';
+	if(!issuer){
+		res.json({'message':'No Issuer'});
+		return;
+	}
+	const result = await issuer.createIssuer(name, createIssuer);
+	if (result[1] === -1) {
+		res.json({'message':'Error. Signature Invalid.'});
+		return;
+	}
+	if (result[1] === -2) {
+		res.json({'message':'Error. No permission to create Issuer.'});
+		return;
+	}
+	res.json({'message':'Issuer created. Please save your private key.', 'privateKey': result[0], 'blockNo': result[1]});
 });
 
 // General Endpoints
@@ -30,10 +53,10 @@ app.get('/getData', async (req, res) => {
 	console.log('/getData Endpoint', result);
 	console.log(typeof(result));
 	if(result === null){
-		res.send({'message':'Block not found'});
+		res.json({'message':'Block not found'});
 		return;
 	}
-	res.send(result);
+	res.json({result});
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));

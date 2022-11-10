@@ -35,15 +35,16 @@ export class Chain {
 			null,
 			{
 				issuerName: 'Genesis',
-				issuerId: 1,
+				issuerId: 0,
+				createIssuers: true,
 				publicKey:
 					'-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3/35Km+0qPQFsvIqLDDw\nQy8VoawHvRByuIXGhgUJig7LEelzsBfsDXq0wkU6BDtZ88FnnQXNflWDcUliIpS1\n1TrNBeTDmzPWii3xKc0N5U9HOquPtfVXhNwur9Ot6aPZ8yLOhx75TSpab/BfMye6\nEKBuUFbMIEhXymGtEojld6HOjGpEidDKnLgPu64/qSm1QgLU7Wj5E1Ilhdx7HSCU\nPFgIOvNlbmq9hBQyq2gSCT9gfd9ihOtzjz3/cDZtYOU99B16ku+sUowjmQnKqmy9\naXjWoRwelWtyzRpNZ+igvzAwYoBEYHFc0eWH7VOHvsmOwZTybCgylmnjHwwbmMPo\nOQIDAQAB\n-----END PUBLIC KEY-----\n',
 			},
 			'ISSUER',
-			'GENISIS',
-			''
+			null,
+			null
 		);
-        issuerCache[genesis.data.issuerId] = genesis.data.publicKey;
+		issuerCache[genesis.data.issuerId] = genesis.data.publicKey;
 		this.chain = [genesis];
 	}
 
@@ -60,10 +61,16 @@ export class Chain {
 	}
 
 	addBlock(data, type, issuerId, signature) {
-        // invalid signature
-        if(!this.verify(issuerId, signature, data)){
-            return -1;
+		// invalid signature
+		if (!this.verify(issuerId, signature, type === "ISSUER" ? JSON.stringify(data) : data.toString('hex'))) {
+			return -1;
+		}
+
+        // unpriviledged issuer
+        if (type === 'ISSUER' && !this.verifyPerms(issuerId)) {
+            return -2;
         }
+
 		const newBlock = new Block(
 			this.chain.length,
 			Date.now(),
@@ -81,23 +88,44 @@ export class Chain {
 	}
 
 	find(blockNo) {
-        if(blockNo < 0 || blockNo >= this.chain.length){
-            return null;
-        }
+		if (blockNo < 0 || blockNo >= this.chain.length) {
+			return null;
+		}
 		return this.chain[blockNo];
 	}
 
-    isValid() {
-        for (let i = 1; i < this.chain.length; i++) {
-            const currentBlock = this.chain[i];
-            const lastBlock = this.chain[i - 1];
-            if (currentBlock.lastHash !== lastBlock.hash) {
-                return false;
+	isValid() {
+		for (let i = 2; i < this.chain.length; i++) {
+			const currentBlock = this.chain[i];
+			const lastBlock = this.chain[i - 1];
+			if (currentBlock.lastHash !== lastBlock.hash) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	getIssuers() {
+		let issuers = [];
+		for (let i = 0; i < this.chain.length; i++) {
+			const currentBlock = this.chain[i];
+			if (currentBlock.type === 'ISSUER') {
+				issuers.push(currentBlock);
+			}
+		}
+		return issuers;
+	}
+    
+    verifyPerms(issuerId) {
+        const issuers = this.getIssuers();
+        for (let i = 0; i < issuers.length; i++) {
+            const issuer = issuers[i];
+            if (issuer.data.issuerId === issuerId) {
+                return issuer.data.createIssuers;
             }
         }
-        return true;
+        return false;
     }
-
 }
 
 export class Issuer {
@@ -123,21 +151,24 @@ export class Issuer {
 		//encrypt data with public key
 		const encryptedData = crypto.publicEncrypt(
 			userKeypair.publicKey,
-			Buffer.from(data)
+			JSON.stringify(data)
 		);
 
-		const signature = crypto.sign('sha256', encryptedData, this.privateKey);
+		const signature = crypto.sign('sha256', encryptedData.toString('hex'), this.privateKey);
 		let blockNo = await Chain.instance.addBlock(
 			encryptedData,
 			'IDENTITY',
 			this.issuerId,
 			signature
 		);
+        if (blockNo === -1) {
+            return [null, -1];
+        }
 		return [userKeypair.privateKey, blockNo];
 	}
 
-	async createIssuer(data) {
-		const keypair = crypto.generateKeyPairSync('dsa', {
+	async createIssuer(issuerName, createIssuer) {
+		const keypair = crypto.generateKeyPairSync('rsa', {
 			modulusLength: 2048,
 			publicKeyEncoding: {
 				type: 'spki',
@@ -148,14 +179,22 @@ export class Issuer {
 				format: 'pem',
 			},
 		});
-		const blockData = { ...data, publicKey: keypair.publicKey };
-		const signature = crypto.sign('sha256', blockData, this.privateKey);
+		const blockData = {
+			issuerName: issuerName,
+			issuerId: Chain.instance.getIssuers().length,
+			createIssuer: createIssuer,
+			publicKey: keypair.publicKey,
+		};
+		const signature = crypto.sign('sha256',JSON.stringify(blockData), this.privateKey);
 		let blockNo = await Chain.instance.addBlock(
 			blockData,
 			'ISSUER',
 			this.issuerId,
 			signature
 		);
+        if(blockNo < 0){
+            return [null, blockNo];
+        }
 		return [keypair.privateKey, blockNo];
 	}
 }
