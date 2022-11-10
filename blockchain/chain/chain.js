@@ -43,7 +43,7 @@ class Chain {
   
 }
 
-export class Issuer{
+export default class Issuer{
     constructor(issuerId, privateKey){
         this.issuerId = issuerId;
         this.privateKey = privateKey;
@@ -67,7 +67,7 @@ export class Issuer{
         
         const signature = crypto.sign('sha256', encryptedData, this.privateKey);
         let result = await Chain.instance.addBlock(encryptedData, 'identity', 'id', signature);
-        return keypair.privateKey, result;
+        return keypair.privateKey;
     }   
 }
 
@@ -83,13 +83,13 @@ const keypair = crypto.generateKeyPairSync('rsa', {
     },
 });
 
-const testIssuer = new Issuer('id', keypair.privateKey);
-const result = testIssuer.issueIdentity('test data');
-// console.log(keypair);
-console.log(Chain.instance);
+// const testIssuer = new Issuer('id', keypair.privateKey);
+// const result = testIssuer.issueIdentity('test data');
+// // console.log(keypair);
+// console.log(Chain.instance);
 
-//verify
-const verify = crypto.createVerify('sha256');
-console.log(Chain.instance.lastBlock.signature);
-verify.update(Chain.instance.lastBlock.data);
-console.log(verify.verify(keypair.publicKey, Chain.instance.lastBlock.signature));
+// //verify
+// const verify = crypto.createVerify('sha256');
+// console.log(Chain.instance.lastBlock.signature);
+// verify.update(Chain.instance.lastBlock.data);
+// console.log(verify.verify(keypair.publicKey, Chain.instance.lastBlock.signature));

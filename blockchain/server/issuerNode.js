@@ -1,6 +1,6 @@
 import * as crypto from 'crypto';
 import express from 'express';
-import './chain.js';
+import Issuer from '../chain/chain.js';
 
 let issuer;
 
@@ -28,9 +28,11 @@ app.get('/createIssuer', (req, res) => {
 	res.send('Issuer ' + JSON.stringify(issuer));
 });
 
-app.get('/requestIdentity', (req, res) => {
-    const key = issuer.issueIdentity();
+app.get('/createIdentity', async (req, res) => {
+    const key = await issuer.issueIdentity('test');
     res.send('Identity issued. Please save your private key.' + JSON.stringify(key));
 });
+
+app.get('/getIdentity', )
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
