@@ -5,9 +5,11 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "js-yaml": "^4.1.0"
   },
   "scripts": {
-    "start": "node server/api.js"
+    "start": "node server/api.js",
+    "keygen": "node scripts/keygen.js"
   }
 }

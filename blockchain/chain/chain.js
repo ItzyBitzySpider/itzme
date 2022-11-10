@@ -27,7 +27,11 @@ export class Chain {
     static instance = new Chain();
 
     constructor() {
-        const genesis = new Block(0, Date.now(),'','','GENISIS','GENISIS','');
+        const genesis = new Block(0, Date.now(),null,{
+            "issuerName": "Genesis",
+            "issuerId": 1,
+            "publicKey": "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA3/35Km+0qPQFsvIqLDDw\nQy8VoawHvRByuIXGhgUJig7LEelzsBfsDXq0wkU6BDtZ88FnnQXNflWDcUliIpS1\n1TrNBeTDmzPWii3xKc0N5U9HOquPtfVXhNwur9Ot6aPZ8yLOhx75TSpab/BfMye6\nEKBuUFbMIEhXymGtEojld6HOjGpEidDKnLgPu64/qSm1QgLU7Wj5E1Ilhdx7HSCU\nPFgIOvNlbmq9hBQyq2gSCT9gfd9ihOtzjz3/cDZtYOU99B16ku+sUowjmQnKqmy9\naXjWoRwelWtyzRpNZ+igvzAwYoBEYHFc0eWH7VOHvsmOwZTybCgylmnjHwwbmMPo\nOQIDAQAB\n-----END PUBLIC KEY-----\n",
+        },'ISSUER','GENISIS','');
         this.chain = [genesis];
     }
 
@@ -43,13 +47,13 @@ export class Chain {
 
     find(blockNo) {
         return this.chain[blockNo];
-    }
-  
+    }  
 }
 
 export class Issuer{
-    constructor(issuerId, privateKey){
-        this.issuerId = issuerId;
+    constructor(txNo, privateKey){
+        const blockData = Chain.instance.find(txNo);
+        this.issuerId = blockData.data.issuerId;
         this.privateKey = privateKey;
     }
 
@@ -70,27 +74,35 @@ export class Issuer{
         const encryptedData = crypto.publicEncrypt(keypair.publicKey, Buffer.from(data));
         
         const signature = crypto.sign('sha256', encryptedData, this.privateKey);
-        let blockNo = await Chain.instance.addBlock(encryptedData, 'identity', 'id', signature);
+        let blockNo = await Chain.instance.addBlock(encryptedData, 'IDENTITY', this.issuerId, signature);
         return [keypair.privateKey, blockNo];
     }   
+
+    async createIssuer(data){
+        const keypair = crypto.generateKeyPairSync('dsa', {
+            modulusLength: 2048,
+            publicKeyEncoding: {
+                type: 'spki',
+                format: 'pem',
+            },
+            privateKeyEncoding: {
+                type: 'pkcs8',
+                format: 'pem',
+            },
+        });
+        const blockData = {...data, publicKey: keypair.publicKey};
+        const signature = crypto.sign('sha256', blockData, this.privateKey);
+        console.log(blockData);
+        let blockNo = await Chain.instance.addBlock(blockData, 'ISSUER', this.issuerId, signature);
+        return [keypair.privateKey, blockNo];
+    }
 }
 
-const keypair = crypto.generateKeyPairSync('rsa', {
-    modulusLength: 2048,
-    publicKeyEncoding: {
-        type: 'spki',
-        format: 'pem',
-    },
-    privateKeyEncoding: {
-        type: 'pkcs8',
-        format: 'pem',
-    },
-});
 
 // const testIssuer = new Issuer('id', keypair.privateKey);
 // const result = testIssuer.issueIdentity('test data');
 // // console.log(keypair);
-// console.log(Chain.instance);
+// console.log(Chain.instance.find(0));
 
 // //verify
 // const verify = crypto.createVerify('sha256');

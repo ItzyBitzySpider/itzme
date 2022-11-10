@@ -2,7 +2,11 @@ import * as crypto from 'crypto';
 import express from 'express';
 import {Issuer, Chain} from '../chain/chain.js';
 
-let issuer;
+//read data from config.yml
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
+const config = yaml.load(fs.readFileSync('./server/config.yml', 'utf8'));
+const issuer = new Issuer(config.txNo, crypto.createPrivateKey(config.privateKey));
 
 //express server
 const app = express();
@@ -11,24 +15,6 @@ const port = 3000;
 app.get('/', (req, res) => res.send('Hello World!'));
 
 // Issuer Endpoints
-app.get('/createIssuer', (req, res) => {
-	const keypair = crypto.generateKeyPairSync('dsa', {
-		modulusLength: 2048,
-		publicKeyEncoding: {
-			type: 'spki',
-			format: 'pem',
-		},
-		privateKeyEncoding: {
-			type: 'pkcs8',
-			format: 'pem',
-		},
-	});
-
-	issuer = new Issuer(keypair.publicKey, keypair.privateKey);
-
-	res.send('Issuer ' + JSON.stringify(issuer));
-});
-
 app.get('/createIdentity', async (req, res) => {
 	if(!issuer){
 		res.send('No Issuer');
@@ -45,7 +31,5 @@ app.get('/getData', async (req, res) => {
 	console.log('hi')
 	res.send(result);
 });
-
-
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
