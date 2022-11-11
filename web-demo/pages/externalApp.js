@@ -8,7 +8,7 @@ export default function ExternalApp() {
     const [info, setInfo] = useState({name: false, email: false, nric: false});
 
 	return (
-		<div className='h-screen w-screen flex flex-col justify-center items-center bg-slate-900'>
+		<div className='h-screen w-screen flex flex-col justify-center items-center bg-slate-800'>
 			<h1 className='text-6xl '>Wannabe Web App</h1>
 			<p className='text-2xl p-5 text-slate-400'>
 				Example web application to demonstrate authentication flow.
