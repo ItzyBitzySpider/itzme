@@ -49,7 +49,7 @@ export class Chain {
 		this.chain = [genesis];
 	}
 
-	lastBlock() {
+	get lastBlock() {
 		return this.chain[this.chain.length - 1];
 	}
 
@@ -79,8 +79,9 @@ export class Chain {
 		}
 
 		// invalid link
-		if (block.lastHash !== this.chain[this.chain.length-1].hash) {
-			
+		if (block.lastHash !== this.lastBlock.hash) {
+			console.log(this.lastBlock.hash);
+			console.log(this.lastBlock)
 			return -3;
 		}
 
@@ -182,7 +183,7 @@ export class Issuer {
 		const block = new Block(
 			Chain.instance.chain.length,
 			Date.now(),
-			Chain.instance.lastBlock().hash,
+			Chain.instance.lastBlock.hash,
 			encryptedData,
 			'IDENTITY',
 			this.issuerId,
@@ -221,7 +222,7 @@ export class Issuer {
 		const block = new Block(
 			Chain.instance.chain.length,
 			Date.now(),
-			Chain.instance.lastBlock().hash,
+			Chain.instance.lastBlock.hash,
 			blockData,
 			'ISSUER',
 			this.issuerId,
