@@ -29,13 +29,13 @@ server.on("connection", (socket) => {
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);
     const block = new Block(
-      data.block.txNo,
-      data.block.timestamp,
-      data.block.lastHash,
-      data.block.data,
-      data.block.type,
-      data.block.issuerId,
-      data.block.signature
+      data.txNo,
+      data.timestamp,
+      data.lastHash,
+      data.data,
+      data.type,
+      data.issuerId,
+      data.signature
     );
     console.log(Chain.instance.addBlock(block));
   });
