@@ -1,6 +1,6 @@
 import { httpServer, connect, opened, connected } from "./p2p.js";
 
-const port = 3001;
+const port = 3000;
 httpServer.listen(port, () =>
   console.log(`Example app listening on port ${port}!`)
 );
