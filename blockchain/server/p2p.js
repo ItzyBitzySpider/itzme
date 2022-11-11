@@ -7,20 +7,23 @@ import { Block, Chain } from "../chain/chain.js";
 const httpServer = http.createServer(app);
 const server = new Server(httpServer);
 
-
 let opened = [];
 let connected = [];
 //read config.yml
-import * as fs from 'fs';
-import * as yaml from 'js-yaml';
-const config = yaml.load(fs.readFileSync('./server/config.yml', 'utf8'));
+import * as fs from "fs";
+import * as yaml from "js-yaml";
+const config = yaml.load(fs.readFileSync("./server/config.yml", "utf8"));
 const myAddress = config.myAddress || "ws://localhost:3000";
 server.on("connection", (socket) => {
   console.log("user connected");
   // establishing mesh connection
   socket.on("HANDSHAKE", (data) => {
     console.log("HANDSHAKE", data);
-    data.peers.forEach((peer) => connect(peer));
+    data.peers.forEach((peer) => {
+      if (peer !== myAddress) {
+        connect(peer);
+      }
+    });
   });
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);
@@ -28,11 +31,12 @@ server.on("connection", (socket) => {
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
     const address = data.address;
-
-    opened.find((peer) => peer.address === address).socket.emit("SEND CHAIN", {
-      chain: Chain.instance.chain,
-    });
-
+    console.log(opened);
+    opened
+      .find((peer) => peer.address === address)
+      .socket.emit("SEND CHAIN", {
+        chain: Chain.instance.chain,
+      });
   });
   socket.on("SEND CHAIN", (data) => {
     console.log("SEND CHAIN", data);
@@ -105,4 +109,4 @@ async function broadcast(type, message) {
 //   console.log(`Example app listening on port ${port}!`)
 // );
 
-export {broadcast, httpServer, connect, opened, connected};
+export { broadcast, httpServer, connect, opened, connected };
