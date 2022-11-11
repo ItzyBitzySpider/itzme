@@ -85,7 +85,16 @@ export class Chain {
 			issuerCache[newBlock.data.issuerId] = newBlock.data.publicKey;
 		}
 		this.chain.push(newBlock);
-		broadcast("NEW BLOCK", { block: newBlock });
+		broadcast("NEW BLOCK", { 
+			data: newBlock.data,
+			previousHash: newBlock.previousHash,
+			hash: newBlock.hash,
+			timestamp: newBlock.timestamp,
+			type: newBlock.type,
+			signature: newBlock.signature,
+			issuerId: newBlock.issuerId,
+			txNo: newBlock.txNo
+		 });
 		return newBlock.txNo;
 	}
 

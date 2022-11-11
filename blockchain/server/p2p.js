@@ -37,7 +37,7 @@ server.on("connection", (socket) => {
       data.block.issuerId,
       data.block.signature
     );
-    Chain.instance.addBlock(block);
+    console.log(Chain.instance.addBlock(block));
   });
 
   // new node joining requesting chain
@@ -107,14 +107,14 @@ async function broadcast(type, message) {
   if (type === "NEW BLOCK") {
     opened.forEach((peer) =>
       peer.socket.emit("NEW BLOCK", {
-        block: message.block,
-        // data: message.data,
-        // previousHash: message.previousHash,
-        // hash: message.hash,
-        // timestamp: message.timestamp,
-        // type: message.type,
-        // signature: message.signature,
-        // issuerId: message.issuerId,
+        data: message.data,
+        previousHash: message.previousHash,
+        hash: message.hash,
+        timestamp: message.timestamp,
+        type: message.type,
+        signature: message.signature,
+        issuerId: message.issuerId,
+        txNo: message.txNo,
       })
     );
   }
