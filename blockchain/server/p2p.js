@@ -11,8 +11,7 @@ const server = new Server(httpServer);
 let opened = [];
 let connected = [];
 
-const port = 3000;
-const myAddress = "ws://localhost:3000";
+const myAddress = process.env.myAddress || "ws://localhost:3000";
 
 server.on("connection", (socket) => {
   console.log("user connected");
@@ -32,7 +31,7 @@ server.on("connection", (socket) => {
     opened.find((peer) => peer.address === address).socket.emit("SEND CHAIN", {
       chain: Chain.instance.chain,
     });
-    
+
   });
   socket.on("SEND CHAIN", (data) => {
     console.log("SEND CHAIN", data);
