@@ -61,45 +61,51 @@ export class Chain {
 		return crypto.verify('sha256', data, issuerKey, signature);
 	}
 
-	addBlock(data, type, issuerId, signature) {
+	addBlock(block) {
 		// invalid signature
-		if (!this.verify(issuerId, signature, type === "ISSUER" ? JSON.stringify(data) : data.toString('hex'))) {
-			console.log(issuerId);
-			console.log(signature);
-			console.log(type === "ISSUER" ? JSON.stringify(data) : data.toString('hex'));
+		if (
+			!this.verify(
+				block.issuerId,
+				block.signature,
+				block.type === 'ISSUER' ? JSON.stringify(block.data) : block.data.toString('hex')
+			)
+		) {
 			return -1;
 		}
 
-        // unpriviledged issuer
-        if (type === 'ISSUER' && !this.verifyPerms(issuerId)) {
-            return -2;
-        }
-
-		const newBlock = new Block(
-			this.chain.length,
-			Date.now(),
-			this.lastBlock.hash,
-			data,
-			type,
-			issuerId,
-			signature
-		);
-		if (type === 'ISSUER') {
-			issuerCache[newBlock.data.issuerId] = newBlock.data.publicKey;
+		// unpriviledged issuer
+		if (block.type === 'ISSUER' && !this.verifyPerms(block.issuerId)) {
+			return -2;
 		}
-		this.chain.push(newBlock);
-		console.log(newBlock);
-		broadcast("NEW BLOCK", { 
-			data: newBlock.data.toString('hex'),
-			lastHash: newBlock.lastHash,
-			hash: newBlock.hash,
-			timestamp: newBlock.timestamp,
-			type: newBlock.type,
-			signature: newBlock.signature.toString('hex'),
-			issuerId: newBlock.issuerId,
-			txNo: newBlock.txNo
-		 });
-		return newBlock.txNo;
+
+		// invalid link
+		const hash = crypto.createHash('SHA256');
+		hash.update(JSON.stringify(this.lastBlock)).end();
+		if (block.lastHash !== hash.digest('hex')) {
+			return -3;
+		}
+
+		// add new issuer to cache
+		if (block.type === 'ISSUER') {
+			issuerCache[block.data.issuerId] = block.data.publicKey;
+		}
+		this.chain.push(block);
+		console.log("PUSHED", block);
+
+		// return early if not required to broadcast
+		// if (!broadcast) return block.txNo;
+
+		broadcast('NEW BLOCK', {
+			data: block.data.toString('hex'),
+			lastHash: block.lastHash,
+			hash: block.hash,
+			timestamp: block.timestamp,
+			type: block.type,
+			signature: block.signature.toString('hex'),
+			issuerId: block.issuerId,
+			txNo: block.txNo,
+		});
+		return block.txNo;
 	}
 
 	find(blockNo) {
@@ -130,17 +136,17 @@ export class Chain {
 		}
 		return issuers;
 	}
-    
-    verifyPerms(issuerId) {
-        const issuers = this.getIssuers();
-        for (let i = 0; i < issuers.length; i++) {
-            const issuer = issuers[i];
-            if (issuer.data.issuerId === issuerId) {
-                return issuer.data.createIssuers;
-            }
-        }
-        return false;
-    }
+
+	verifyPerms(issuerId) {
+		const issuers = this.getIssuers();
+		for (let i = 0; i < issuers.length; i++) {
+			const issuer = issuers[i];
+			if (issuer.data.issuerId === issuerId) {
+				return issuer.data.createIssuers;
+			}
+		}
+		return false;
+	}
 }
 
 export class Issuer {
@@ -169,16 +175,24 @@ export class Issuer {
 			JSON.stringify(data)
 		);
 
-		const signature = crypto.sign('sha256', encryptedData.toString('hex'), this.privateKey);
-		let blockNo = await Chain.instance.addBlock(
+		const signature = crypto.sign(
+			'sha256',
+			encryptedData.toString('hex'),
+			this.privateKey
+		);
+		const block = new Block(
+			Chain.instance.chain.length,
+			Date.now(),
+			Chain.instance.lastBlock.hash,
 			encryptedData,
 			'IDENTITY',
 			this.issuerId,
 			signature
 		);
-        if (blockNo === -1) {
-            return [null, -1];
-        }
+		let blockNo = await Chain.instance.addBlock(block);
+		if (blockNo === -1) {
+			return [null, -1];
+		}
 		return [userKeypair.privateKey, blockNo];
 	}
 
@@ -200,16 +214,24 @@ export class Issuer {
 			createIssuer: createIssuer,
 			publicKey: keypair.publicKey,
 		};
-		const signature = crypto.sign('sha256',JSON.stringify(blockData), this.privateKey);
-		let blockNo = await Chain.instance.addBlock(
+		const signature = crypto.sign(
+			'sha256',
+			JSON.stringify(blockData),
+			this.privateKey
+		);
+		const block = new Block(
+			Chain.instance.chain.length,
+			Date.now(),
+			Chain.instance.lastBlock.hash,
 			blockData,
 			'ISSUER',
 			this.issuerId,
 			signature
 		);
-        if(blockNo < 0){
-            return [null, blockNo];
-        }
+		let blockNo = await Chain.instance.addBlock(block);
+		if (blockNo < 0) {
+			return [null, blockNo];
+		}
 		return [keypair.privateKey, blockNo];
 	}
 }

@@ -37,8 +37,8 @@ server.on("connection", (socket) => {
       data.issuerId,
       Buffer.from(data.signature, 'hex')
     );
-    console.log("block", block);
-    console.log(Chain.instance.addBlock(block.data, block.type, block.issuerId, block.signature));
+    console.log("block", block.hash);
+    console.log(Chain.instance.addBlock(block));
   });
 
   // new node joining requesting chain
