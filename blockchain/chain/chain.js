@@ -14,7 +14,7 @@ export class Block {
 		this.txNo = txNo;
 	}
 
-	get hash() {
+	static get hash() {
 		const str = JSON.stringify(this);
 		const hash = crypto.createHash('SHA256');
 		hash.update(str).end();
