@@ -64,6 +64,9 @@ export class Chain {
 	addBlock(data, type, issuerId, signature) {
 		// invalid signature
 		if (!this.verify(issuerId, signature, type === "ISSUER" ? JSON.stringify(data) : data.toString('hex'))) {
+			console.log(issuerId);
+			console.log(signature);
+			console.log(type === "ISSUER" ? JSON.stringify(data) : data.toString('hex'));
 			return -1;
 		}
 
@@ -85,6 +88,7 @@ export class Chain {
 			issuerCache[newBlock.data.issuerId] = newBlock.data.publicKey;
 		}
 		this.chain.push(newBlock);
+		console.log(newBlock);
 		broadcast("NEW BLOCK", { 
 			data: newBlock.data.toString('hex'),
 			previousHash: newBlock.previousHash,
