@@ -10,9 +10,11 @@ const server = new Server(httpServer);
 
 let opened = [];
 let connected = [];
-
-const myAddress = process.env.myAddress || "ws://localhost:3000";
-
+//read config.yml
+import * as fs from 'fs';
+import * as yaml from 'js-yaml';
+const config = yaml.load(fs.readFileSync('./server/config.yml', 'utf8'));
+const myAddress = config.myAddress || "ws://localhost:3000";
 server.on("connection", (socket) => {
   console.log("user connected");
   // establishing mesh connection
