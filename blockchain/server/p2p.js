@@ -20,9 +20,7 @@ server.on("connection", (socket) => {
   socket.on("HANDSHAKE", (data) => {
     console.log("HANDSHAKE", data);
     data.peers.forEach((peer) => {
-      if (peer !== myAddress) {
         connect(peer);
-      }
     });
   });
   socket.on("NEW BLOCK", (data) => {
@@ -46,6 +44,7 @@ server.on("connection", (socket) => {
 });
 
 async function connect(address, action = null) {
+  console.log('connected array',connected)
   if (
     !connected.find((peer) => peer.address === address) &&
     address !== myAddress
