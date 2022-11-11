@@ -91,7 +91,7 @@ export class Chain {
 		console.log(newBlock);
 		broadcast("NEW BLOCK", { 
 			data: newBlock.data.toString('hex'),
-			previousHash: newBlock.previousHash,
+			lastHash: newBlock.lastHash,
 			hash: newBlock.hash,
 			timestamp: newBlock.timestamp,
 			type: newBlock.type,
