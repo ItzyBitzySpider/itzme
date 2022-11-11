@@ -32,10 +32,10 @@ server.on("connection", (socket) => {
       data.txNo,
       data.timestamp,
       data.lastHash,
-      data.data,
+      Buffer.from(data.data, 'hex'),
       data.type,
       data.issuerId,
-      data.signature
+      Buffer.from(data.signature, 'hex')
     );
     console.log(Chain.instance.addBlock(block));
   });

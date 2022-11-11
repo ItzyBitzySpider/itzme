@@ -86,12 +86,12 @@ export class Chain {
 		}
 		this.chain.push(newBlock);
 		broadcast("NEW BLOCK", { 
-			data: newBlock.data,
+			data: newBlock.data.toString('hex'),
 			previousHash: newBlock.previousHash,
 			hash: newBlock.hash,
 			timestamp: newBlock.timestamp,
 			type: newBlock.type,
-			signature: newBlock.signature,
+			signature: newBlock.signature.toString('hex'),
 			issuerId: newBlock.issuerId,
 			txNo: newBlock.txNo
 		 });
