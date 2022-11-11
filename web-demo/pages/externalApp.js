@@ -6,7 +6,7 @@ export default function ExternalApp() {
   const [name, setName] = useState(false);
   const [email, setEmail] = useState(false);
   const [nric, setNric] = useState(false);
-  const [info, setInfo] = useState({ name: false, email: false, nric: false });
+  const [info, setInfo] = useState({ name: false, email: false, nric: false, callbackURL: "ws://localhost:3000" });
 
   useEffect(() => {
     fetch("/api/socket").finally(() => {
@@ -41,7 +41,7 @@ export default function ExternalApp() {
       <button
         className="text-2xl font-medium bg-orange-600 p-3 px-10 rounded-lg  text-white"
         onClick={() => {
-          setInfo({ name, email, nric });
+          setInfo({ name, email, nric, callbackURL: "ws://localhost:3000" });
         }}
       >
         Generate
