@@ -78,8 +78,13 @@ export class Chain {
 			return -2;
 		}
 
+		// invalid link
+		if (block.lastHash !== Chain.instance.lastBlock.hash) {
+			return -3;
+		}
+
 		// add new issuer to cache
-		if (type === 'ISSUER') {
+		if (block.type === 'ISSUER') {
 			issuerCache[block.data.issuerId] = block.data.publicKey;
 		}
 		this.chain.push(block);
