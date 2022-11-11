@@ -12,7 +12,8 @@
     "socket.io-client": "^4.5.3"
   },
   "scripts": {
-    "start": "node server/p2p.js",
+    "start": "node server/index.js",
     "keygen": "node scripts/keygen.js"
+    
   }
 }
