@@ -15,7 +15,7 @@ const port = 3000;
 app.get('/', (req, res) => res.json({'message':'Hello World!'}));
 
 // Issuer Endpoints
-app.get('/issueIdentity', async (req, res) => {
+app.get('/admin/issueIdentity', async (req, res) => {
 	if(!issuer){
 		res.json({'message':'No Issuer'});
 		return;
@@ -28,7 +28,7 @@ app.get('/issueIdentity', async (req, res) => {
     res.json({'message':'Identity issued. Please save your private key.', 'privateKey': result[0], 'blockNo': result[1]});
 });
 
-app.get('/createIssuer', async (req, res) => {
+app.get('/admin/createIssuer', async (req, res) => {
 	const name = req.query.name;
 	const createIssuer = req.query.createIssuer === 'true';
 	if(!issuer){

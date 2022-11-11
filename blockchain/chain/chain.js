@@ -2,7 +2,7 @@ import * as crypto from 'crypto';
 
 let issuerCache = {};
 
-class Block {
+export class Block {
 	constructor(txNo, timestamp, lastHash, data, type, issuerId, signature) {
 		this.timestamp = timestamp;
 		this.lastHash = lastHash;
