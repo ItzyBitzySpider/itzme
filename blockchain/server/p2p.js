@@ -17,14 +17,19 @@ const myAddress = "ws://localhost:3000";
 server.on("connection", (socket) => {
   console.log("user connected");
   // establishing mesh connection
-  socket.on("HANDSHAKE", (data) => {});
+  socket.on("HANDSHAKE", (data) => {
+    console.log("HANDSHAKE", data);
+  });
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);
   });
-  // socket.on("REQUEST CHECK", (data)=>{});
-  // socket.on("SEND CHECK", (data)=>{});
-  socket.on("REQUEST CHAIN", (data) => {});
-  socket.on("SEND CHAIN", (data) => {});
+  socket.on("REQUEST CHAIN", (data) => {
+    console.log("REQUEST CHAIN", data);
+
+  });
+  socket.on("SEND CHAIN", (data) => {
+    console.log("SEND CHAIN", data);
+  });
 });
 
 async function connect(address) {
@@ -86,4 +91,4 @@ async function broadcast(type, message) {
 //   console.log(`Example app listening on port ${port}!`)
 // );
 
-export {broadcast, httpServer, connect};
+export {broadcast, httpServer, connect, opened, connected};
