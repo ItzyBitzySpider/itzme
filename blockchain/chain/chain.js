@@ -14,7 +14,7 @@ export class Block {
 		this.txNo = txNo;
 	}
 
-	static get hash() {
+	get hash() {
 		const str = JSON.stringify(this);
 		const hash = crypto.createHash('SHA256');
 		hash.update(str).end();
@@ -79,7 +79,7 @@ export class Chain {
 		}
 
 		// invalid link
-		if (block.lastHash !== this.lastBlock.hash) {
+		if (block.lastHash !== this.chain[this.chain.length-1].hash) {
 			return -3;
 		}
 
@@ -91,7 +91,7 @@ export class Chain {
 		console.log("PUSHED", block);
 
 		// return early if not required to broadcast
-		if (!broadcast) return block.txNo;
+		// if (!broadcast) return block.txNo;
 
 		broadcast('NEW BLOCK', {
 			data: block.data.toString('hex'),
