@@ -13,6 +13,7 @@ const ioHandler = (req, res) => {
       });
       socket.on("keys", (msg) => {
         console.log(msg);
+        socket.broadcast.emit("keys", msg);
       });
     });
 
