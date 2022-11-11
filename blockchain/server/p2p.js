@@ -33,28 +33,35 @@ server.on("connection", (socket) => {
   });
 });
 
-async function connect(address) {
+async function connect(address, first = false) {
   if (
     !connected.find((peer) => peer.address === address) &&
     address !== myAddress
   ) {
     const socket = io(address);
     socket.on("connect", () => {
+      // share other peers with connected peer
       socket.emit("HANDSHAKE", { peers: [myAddress, ...connected] });
+      // share connected peer with other peers
       opened.forEach((peer) =>
         socket.emit("HANDSHAKE", { peers: [peer.address] })
       );
+      // add connected peer to opened
       if (
         !opened.find((peer) => peer.address === address) &&
         address !== myAddress
       ) {
         opened.push({ address, socket });
       }
+      // add connected peer to connected
       if (
         !connected.find((peerAddress) => peerAddress === address) &&
         address !== myAddress
       ) {
         connected.push(address);
+      }
+      if (first) {
+        broadcast("REQUEST CHAIN", { address: myAddress });
       }
     });
     //disconnected
