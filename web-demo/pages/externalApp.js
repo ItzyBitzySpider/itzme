@@ -17,12 +17,13 @@ export default function ExternalApp() {
         socket.emit("hello");
       });
 
-      socket.on("hello", (data) => {
-        console.log("hello", data);
-      });
-
       socket.on("a user connected", () => {
         console.log("a user connected");
+      });
+
+      socket.on("keys", (msg) => {
+        console.log(msg);
+		setInfo(JSON.stringify(msg));
       });
 
       socket.on("disconnect", () => {
