@@ -19,6 +19,7 @@ server.on("connection", (socket) => {
   // establishing mesh connection
   socket.on("HANDSHAKE", (data) => {
     console.log("HANDSHAKE", data);
+    data.peers.forEach((peer) => connect(peer));
   });
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);

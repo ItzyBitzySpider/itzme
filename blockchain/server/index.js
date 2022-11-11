@@ -6,4 +6,5 @@ httpServer.listen(port, () =>
 );
 
 connect("ws://143.198.209.169:3000");
-
+console.log(opened)
+console.log(connected)
