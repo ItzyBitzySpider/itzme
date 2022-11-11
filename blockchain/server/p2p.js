@@ -28,6 +28,8 @@ server.on("connection", (socket) => {
   // block has been broadcast to the network
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);
+    const block = data.block;
+    Chain.instance.addBlock(block);
   });
 
   // new node joining requesting chain
@@ -99,14 +101,14 @@ async function connect(address, action = null) {
 async function broadcast(type, message) {
   if (type === "NEW BLOCK") {
     opened.forEach((peer) =>
-      peer.socket.emit("NEW BLOCK", {
-        data: message.data,
-        previousHash: message.previousHash,
-        hash: message.hash,
-        timestamp: message.timestamp,
-        type: message.type,
-        signature: message.signature,
-        issuerId: message.issuerId,
+      peer.socket.emit("NEW BLOCK", { block: message.block })
+        // data: message.data,
+        // previousHash: message.previousHash,
+        // hash: message.hash,
+        // timestamp: message.timestamp,
+        // type: message.type,
+        // signature: message.signature,
+        // issuerId: message.issuerId,
       })
     );
   }

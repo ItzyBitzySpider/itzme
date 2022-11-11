@@ -1,4 +1,5 @@
 import * as crypto from 'crypto';
+import { broadcast } from '../server/p2p';
 
 let issuerCache = {};
 
@@ -84,6 +85,7 @@ export class Chain {
 			issuerCache[newBlock.data.issuerId] = newBlock.data.publicKey;
 		}
 		this.chain.push(newBlock);
+		broadcast("NEW BLOCK", { block: newBlock });
 		return newBlock.txNo;
 	}
 
