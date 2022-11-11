@@ -27,8 +27,7 @@ server.on("connection", (socket) => {
   });
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
-    const address = data;
-    console.log(address);
+    const address = data.address;
 
     opened.find((peer) => peer.address === address).socket.emit("SEND CHAIN", {
       chain: Chain.instance.chain,
@@ -96,7 +95,7 @@ async function broadcast(type, message) {
   if (type === "REQUEST CHAIN") {
     opened.forEach((peer) =>
       peer.socket.emit("REQUEST CHAIN", {
-        data: message.address,
+        address: message.address,
       })
     );
   }
