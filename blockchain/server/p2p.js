@@ -110,9 +110,9 @@ async function broadcast(type, message) {
     );
   }
 }
-
-// httpServer.listen(port, () =>
-//   console.log(`Example app listening on port ${port}!`)
-// );
+const port = 3000
+httpServer.listen(port, () =>
+  console.log(`Example app listening on port ${port}!`)
+);
 
 export { broadcast, httpServer, connect, opened, connected };

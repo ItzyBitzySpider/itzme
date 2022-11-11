@@ -10,7 +10,6 @@ const issuer = new Issuer(config.txNo, crypto.createPrivateKey(config.privateKey
 
 //express server
 const app = express();
-const port = 3000;
 
 app.get('/', (req, res) => res.json({'message':'Hello World!'}));
 
