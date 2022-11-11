@@ -176,7 +176,7 @@ export class Issuer {
 		const block = new Block(
 			Chain.instance.chain.length,
 			Date.now(),
-			Chain.instance.chain.lastBlock.hash,
+			Chain.instance.lastBlock.hash,
 			encryptedData,
 			'IDENTITY',
 			this.issuerId,
