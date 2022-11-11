@@ -46,7 +46,7 @@ server.on("connection", (socket) => {
 async function connect(address, action = null) {
   console.log('connected array',connected)
   if (
-    !connected.find((peer) => peer.address === address) &&
+    !connected.find((peer) => peer === address) &&
     address !== myAddress
   ) {
     const socket = io(address);
