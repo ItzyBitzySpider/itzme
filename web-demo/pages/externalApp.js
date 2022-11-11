@@ -60,12 +60,14 @@ export default function ExternalApp() {
 					</div>
 				</form>
 				<div className='h-full w-full flex flex-col justify-center items-center'>
-					<QRCode
+					<div className='bg-white p-4'>
+                        <QRCode
 						size={512}
 						// style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
 						value={JSON.stringify(info)}
 						// viewBox={`0 0 256 256`}
 					/>
+                    </div>
 				</div>
 			</div>
 		</div>
