@@ -37,6 +37,7 @@ server.on("connection", (socket) => {
       data.issuerId,
       Buffer.from(data.signature, 'hex')
     );
+    console.log("block", block);
     console.log(Chain.instance.addBlock(block));
   });
 
