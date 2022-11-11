@@ -109,7 +109,7 @@ async function broadcast(type, message) {
     opened.forEach((peer) =>
       peer.socket.emit("NEW BLOCK", {
         data: message.data,
-        previousHash: message.previousHash,
+        lastHash: message.lastHash,
         hash: message.hash,
         timestamp: message.timestamp,
         type: message.type,
