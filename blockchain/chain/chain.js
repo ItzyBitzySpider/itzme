@@ -1,5 +1,5 @@
 import * as crypto from 'crypto';
-import { broadcast } from '../server/p2p';
+import { broadcast } from '../server/p2p.js';
 
 let issuerCache = {};
 
