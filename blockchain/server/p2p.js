@@ -21,7 +21,7 @@ server.on("connection", (socket) => {
   socket.on("HANDSHAKE", (data) => {
     console.log("HANDSHAKE", data);
     data.peers.forEach((peer) => {
-        connect(peer);
+      connect(peer);
     });
   });
 
@@ -36,7 +36,7 @@ server.on("connection", (socket) => {
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
     const address = data.address;
-    let conn; 
+    let conn;
     if ((conn = opened.find((peer) => peer.address === address))) {
       conn.socket.emit("SEND CHAIN", {
         chain: Chain.instance.chain,
@@ -54,11 +54,8 @@ server.on("connection", (socket) => {
 });
 
 async function connect(address, action = null) {
-  console.log('connected array',connected)
-  if (
-    !connected.find((peer) => peer === address) &&
-    address !== myAddress
-  ) {
+  console.log("connected array", connected);
+  if (!connected.find((peer) => peer === address) && address !== myAddress) {
     const socket = io(address);
     socket.on("connect", () => {
       // share other peers with connected peer
@@ -101,7 +98,8 @@ async function connect(address, action = null) {
 async function broadcast(type, message) {
   if (type === "NEW BLOCK") {
     opened.forEach((peer) =>
-      peer.socket.emit("NEW BLOCK", { block: message.block })
+      peer.socket.emit("NEW BLOCK", {
+        block: message.block,
         // data: message.data,
         // previousHash: message.previousHash,
         // hash: message.hash,
@@ -120,7 +118,7 @@ async function broadcast(type, message) {
     );
   }
 }
-const port = 3000
+const port = 3000;
 httpServer.listen(port, () =>
   console.log(`Example app listening on port ${port}!`)
 );
