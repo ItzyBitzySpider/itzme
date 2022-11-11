@@ -5,4 +5,4 @@ httpServer.listen(port, () =>
   console.log(`Example app listening on port ${port}!`)
 );
 
-connect("ws://143.198.209.169:3000", true);
+connect("ws://143.198.209.169:3000", "REQUEST CHAIN");

@@ -31,19 +31,20 @@ server.on("connection", (socket) => {
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
     const address = data.address;
-    console.log(opened);
-    opened
-      .find((peer) => peer.address === address)
-      .socket.emit("SEND CHAIN", {
+    if ((conn = opened.find((peer) => peer.address === address))) {
+      conn.socket.emit("SEND CHAIN", {
         chain: Chain.instance.chain,
       });
+    } else {
+      connect(address, "SEND CHAIN");
+    }
   });
   socket.on("SEND CHAIN", (data) => {
     console.log("SEND CHAIN", data);
   });
 });
 
-async function connect(address, first = false) {
+async function connect(address, action = null) {
   if (
     !connected.find((peer) => peer.address === address) &&
     address !== myAddress
@@ -70,8 +71,13 @@ async function connect(address, first = false) {
       ) {
         connected.push(address);
       }
-      if (first) {
+      if (action === "REQUEST CHAIN") {
         broadcast("REQUEST CHAIN", { address: myAddress });
+      }
+      if (action === "SEND CHAIN") {
+        socket.emit("SEND CHAIN", {
+          chain: Chain.instance.chain,
+        });
       }
     });
     //disconnected
