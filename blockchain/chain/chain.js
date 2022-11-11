@@ -79,9 +79,7 @@ export class Chain {
 		}
 
 		// invalid link
-		if (block.lastHash !== Chain.instance.lastBlock.hash) {
-			console.log('last hash', block.lastHash);
-			console.log('last block hash', Chain.instance.lastBlock.hash);
+		if (block.lastHash !== this.lastBlock.hash) {
 			return -3;
 		}
 
