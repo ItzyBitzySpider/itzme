@@ -26,7 +26,13 @@ server.on("connection", (socket) => {
   });
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
+    const address = data.address;
+    console.log(address);
 
+    opened.find((peer) => peer.address === address).socket.emit("SEND CHAIN", {
+      chain: Chain.instance.chain,
+    });
+    
   });
   socket.on("SEND CHAIN", (data) => {
     console.log("SEND CHAIN", data);
