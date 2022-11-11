@@ -79,9 +79,9 @@ export class Chain {
 		}
 
 		// invalid link
-		if (block.lastHash !== this.lastBlock.hash) {
-			console.log(this.lastBlock.hash);
-			console.log(this.lastBlock)
+		const hash = crypto.createHash('SHA256');
+		hash.update(JSON.stringify(this.lastBlock)).end();
+		if (block.lastHash !== hash.digest('hex')) {
 			return -3;
 		}
 
