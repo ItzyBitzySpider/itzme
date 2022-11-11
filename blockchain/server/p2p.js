@@ -28,7 +28,15 @@ server.on("connection", (socket) => {
   // block has been broadcast to the network
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);
-    const block = data.block;
+    const block = new Block(
+      data.block.txNo,
+      data.block.timestamp,
+      data.block.lastHash,
+      data.block.data,
+      data.block.type,
+      data.block.issuerId,
+      data.block.signature
+    );
     Chain.instance.addBlock(block);
   });
 
