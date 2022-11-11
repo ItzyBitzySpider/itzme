@@ -16,6 +16,7 @@ const config = yaml.load(fs.readFileSync("./server/config.yml", "utf8"));
 const myAddress = config.myAddress || "ws://localhost:3000";
 server.on("connection", (socket) => {
   console.log("user connected");
+
   // establishing mesh connection
   socket.on("HANDSHAKE", (data) => {
     console.log("HANDSHAKE", data);
@@ -23,9 +24,13 @@ server.on("connection", (socket) => {
         connect(peer);
     });
   });
+
+  // block has been broadcast to the network
   socket.on("NEW BLOCK", (data) => {
     console.log("NEW BLOCK", data);
   });
+
+  // new node joining requesting chain
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
     const address = data.address;
@@ -38,8 +43,11 @@ server.on("connection", (socket) => {
       connect(address, "SEND CHAIN");
     }
   });
+
+  // receive chain data from other node
   socket.on("SEND CHAIN", (data) => {
-    console.log("SEND CHAIN", data);
+    console.log("SEND CHAIN", JSON.stringify(data.chain));
+    Chain.instance.chain = data.chain;
   });
 });
 
