@@ -31,6 +31,7 @@ server.on("connection", (socket) => {
   socket.on("REQUEST CHAIN", (data) => {
     console.log("REQUEST CHAIN", data);
     const address = data.address;
+    let conn; 
     if ((conn = opened.find((peer) => peer.address === address))) {
       conn.socket.emit("SEND CHAIN", {
         chain: Chain.instance.chain,
