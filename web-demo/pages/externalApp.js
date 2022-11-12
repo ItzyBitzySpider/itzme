@@ -3,13 +3,9 @@ import QRCode from 'react-qr-code';
 import io from 'socket.io-client';
 
 export default function ExternalApp({ ip }) {
-	const [name, setName] = useState(false);
-	const [email, setEmail] = useState(false);
-	const [nric, setNric] = useState(false);
+	const [option, setOption] = useState('');
 	const [info, setInfo] = useState({
-		name: false,
-		email: false,
-		nric: false,
+		option: option,
 		callbackURL: 'ws://' + ip + ':3000',
 	});
 	const [callback, setCallback] = useState('');
@@ -51,7 +47,7 @@ export default function ExternalApp({ ip }) {
 					}),
 				});
 				const result = await decrypt.json();
-				setDecrypted(result);				
+				setDecrypted(result);
 			});
 
 			socket.on('disconnect', () => {
@@ -62,19 +58,10 @@ export default function ExternalApp({ ip }) {
 
 	return (
 		<div className='h-screen w-screen flex flex-col justify-center items-center bg-slate-800'>
-			<h1 className='text-6xl text-white'>Wannabe Web App</h1>
-			<p className='text-2xl p-5 text-slate-400'>
+			<h1 className='text-6xl font-medium text-orange-500'>Wannabe Web App</h1>
+			<p className='text-2xl p-5 text-slate-300'>
 				Example web application to demonstrate authentication flow.
 			</p>
-			<button
-				className='text-2xl font-medium bg-orange-600 p-3 px-10 rounded-lg  text-white'
-				onClick={() => {
-					setInfo({ name, email, nric, callbackURL: 'ws://' + ip + ':3000' });
-				}}>
-				Generate
-			</button>
-			{callback === '' && <p className=' text-white'>{JSON.stringify(info)}</p>}
-
 			<div className='h-2/3 flex flex-row w-screen'>
 				{callback === '' && (
 					<>
@@ -83,9 +70,15 @@ export default function ExternalApp({ ip }) {
 								<div className='w-50 text-4xl  text-white flex items-center p-5'>
 									<input
 										className='w-6 h-6 rounded-lg mr-5'
-										type='checkbox'
-										checked={name}
-										onChange={() => setName(!name)}
+										type='radio'
+										checked={option === 'Name'}
+										onChange={() => {
+											setOption('Name');
+											setInfo({
+												option: 'Name',
+												callbackURL: 'ws://' + ip + ':3000',
+											});
+										}}
 										value='Name'
 										name='Name'
 									/>
@@ -94,9 +87,15 @@ export default function ExternalApp({ ip }) {
 								<div className='w-50 text-4xl  text-white flex items-center p-5'>
 									<input
 										className='w-6 h-6 rounded-lg mr-5'
-										type='checkbox'
-										checked={email}
-										onChange={() => setEmail(!email)}
+										type='radio'
+										checked={option === 'Email'}
+										onChange={() => {
+											setOption('Email');
+											setInfo({
+												option: 'Email',
+												callbackURL: 'ws://' + ip + ':3000',
+											});
+										}}
 										value='Email'
 										name='Email'
 									/>
@@ -105,9 +104,15 @@ export default function ExternalApp({ ip }) {
 								<div className='w-50 text-4xl  text-white flex items-center p-5'>
 									<input
 										className='w-6 h-6 rounded-lg mr-5'
-										type='checkbox'
-										checked={nric}
-										onChange={() => setNric(!nric)}
+										type='radio'
+										checked={option === 'NRIC'}
+										onChange={() => {
+											setOption('NRIC');
+											setInfo({
+												option: 'NRIC',
+												callbackURL: 'ws://' + ip + ':3000',
+											});
+										}}
 										value='NRIC'
 										name='NRIC'
 									/>
@@ -119,34 +124,46 @@ export default function ExternalApp({ ip }) {
 							<div className='bg-white p-4'>
 								<QRCode size={512} value={JSON.stringify(info)} />
 							</div>
+							<p className='mt-10 text-2xl text-white'>
+								{JSON.stringify(info)}
+							</p>
 						</div>
 					</>
 				)}
 				{callback !== '' && (
 					<>
 						<div className='h-full w-full flex flex-col items-center justify-center'>
+							<p className='text-2xl text-orange-500 font-bold'>
+								From Mobile App
+							</p>
 							<textarea
 								rows={30}
 								cols={50}
-								className='rounded-2xl p-4 mt-10'
+								className='rounded-2xl p-4 mt-5'
 								value={callback}
 								readOnly
 							/>
 						</div>
 						<div className='h-full w-full flex flex-col items-center justify-center'>
+							<p className='text-2xl text-orange-500 font-bold'>
+								Data from Blockchain
+							</p>
 							<textarea
 								rows={30}
 								cols={50}
-								className='rounded-2xl p-4 mt-10'
+								className='rounded-2xl p-4 mt-5'
 								value={chainData}
 								readOnly
 							/>
 						</div>
 						<div className='h-full w-full flex flex-col items-center justify-center'>
+							<p className='text-2xl text-orange-500 font-bold'>
+								Decrypted Data
+							</p>
 							<textarea
 								rows={30}
 								cols={50}
-								className='rounded-2xl p-4 mt-10'
+								className='rounded-2xl p-4 mt-5 overflow-hidden'
 								value={decrypted}
 								readOnly
 							/>
