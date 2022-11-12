@@ -1,12 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:socket_io_client/socket_io_client.dart' as socket;
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:itzme/models/credentials.dart';
 
-// IMPLEMENT SENDING OF PRIVATE KEY AND TXNO/BLOCKNO WITH SOCKETS
-
-socket.Socket? client;
+Socket? socket;
 const String baseUrl = "143.198.209.169:3000";
 
 Future<Credentials> issueIdentity(Map<String, String> fields) async {
@@ -57,14 +55,18 @@ void authorizeDetails(
   String socketUrl,
 ) {
   // Dart client
-  if (client == null) {
-    socket.Socket client = socket.io(socketUrl);
-    client.onConnect((_) {
-      client.emit('msg', 'test');
+  if (socket == null) {
+    socket = io(socketUrl, <String, dynamic>{
+      'transports': ['websocket'],
+      'autoConnect': false,
     });
+    socket!.onConnect((_) {
+      print('Connected');
+    });
+    socket!.connect();
   }
 
-  client!.emit('keys', {
+  socket!.emit('keys', {
     'privateKey': credentials.privateKey,
     'txNo': credentials.blockNo.toString(),
   });
