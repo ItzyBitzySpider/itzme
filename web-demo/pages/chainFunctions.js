@@ -29,7 +29,7 @@ export default function ChainFunctions() {
 	};
 
 	const issueIdentity = (field, identity) => {
-		fetch(url + '/admin/issueIdentity?field' + field + '&value=' + identity)
+		fetch(url + '/admin/issueIdentity?field=' + field + '&value=' + identity)
 			.then((res) => res.json())
 			.then((data) => {
 				setValue(JSON.stringify(data));
