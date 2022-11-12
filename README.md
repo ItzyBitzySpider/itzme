@@ -28,6 +28,18 @@ This folder contains the code to deploy a web application that serves 2 purposes
 
 For more detailed explanation, look into the individual application folders. 
 
+### Permissioned blockchain
+
+Public blockchains allow anyone to access them. They are built with the assumption of zero-trust of individual actors. Private blockchains on the other hand are completely closed off. Participants are all known to each other. Permissioned blockchains on the other hand are a hybrid of public and private blockchains. 
+
+It'z Me is built with the assumption of trust for a handful of partipants in the chain. These trusted individuals have write access to the blockchain. They are the authorities issuing identities to users. In other words, they are, in most cases, large government organizations. 
+
+Issuers are the entities who are creating identities for users. The Genisis block of the blockchain will create the first "issuer". The Genisis Issuer would have the authority to not only issue identities but also create new issuers. Although issuers are assumed to be trusted, they need not be granted the authority to further create issuers. 
+
+### Storage of Identities
+
+The blockchain replaces the MyInfo resource server, enabling decentralised storage of information. Unlike more popular blockchains like Bitcoin and Ethereum, each block only contains a single transaction. Since all writers to the blockchain are trusted, there is no need for a POW or POS function to hinder write access. Since the data being stored is sensitive, the data stored on the blockchain is first encrypted. This means that to retreive an identity stored on the chain, one would need 2 pieces of information, the decryption key, and the block location. 
+
 ### Authentication Flow
 
 Form the Singpass [Documentation](https://api.singpass.gov.sg/library/myinfo/developers/overview) for developers, the following shows a logical overview of the architecture.
@@ -43,4 +55,14 @@ The services that we aim to decentralise are the MyInfo server and the Service A
 With this in mind, the new authorisation flow is as follows. 
 
 ![new auth flow](newAuthFlow.png)
+
+### Singpass as a central authority
+
+As mentioned previously, an issue with having a central ID provider is that the entire system is susceptible to a single failure point. However, this is not necessarily the case with Singpass. As mentioned in the Authentication Flow diagram, Singpass would act as a keystore. By caching the keys on the user device, we can maintain some level of functionality even if the central Singpass server were to fail. 
+
+The current version of the Singpass app allows users to log into the app and view their digital identification cards without having an internet connection. This means that at it's current state, it is already caching information for quick access. All of these is protected locally via biometric authentication. 
+
+However, there is still impact to the current model if the central Singpass server were to go down. Namely, users would not be able to receive new keys. The event of issuing new keys which is likened to issuing of a new identity card is a less common and non-time critical event. Therefore, since the proposed authentication method with Singpass does not rely on the central server, the impact of failure is minimised. 
+
+
 
