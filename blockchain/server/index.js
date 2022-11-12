@@ -1,8 +1,10 @@
 import { httpServer, connect, opened, connected } from "./p2p.js";
 
-const port = 3000;
-// server.listen(port, () =>
-//   console.log(`Example app listening on port ${port}!`)
-// );
+import * as fs from "fs";
+import * as yaml from "js-yaml";
+const config = yaml.load(fs.readFileSync("./server/config.yml", "utf8"));
+const peerAddress = config.peers;
 
-connect("ws://143.198.209.169:3000", "REQUEST CHAIN");
+if(peerAddress){
+    connect(peerAddress, "REQUEST CHAIN");
+}
