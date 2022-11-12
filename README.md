@@ -38,7 +38,7 @@ Issuers are the entities who are creating identities for users. The Genisis bloc
 
 ### Storage of Identities
 
-The blockchain replaces the MyInfo resource server, enabling decentralised storage of information. Unlike more popular blockchains like Bitcoin and Ethereum, each block only contains a single transaction. Since all writers to the blockchain are trusted, there is no need for a POW or POS function to hinder write access. Since the data being stored is sensitive, the data stored on the blockchain is first encrypted. This means that to retreive an identity stored on the chain, one would need 2 pieces of information, the decryption key, and the block location. 
+The blockchain replaces the MyInfo resource server, enabling decentralised storage of information. Unlike more popular blockchains like Bitcoin and Ethereum, each block only contains a single transaction. Since all writers to the blockchain are trusted, there is no need for a PoW or PoS function to hinder write access. Since the data being stored is sensitive, the data stored on the blockchain is first encrypted. This means that to retreive an identity stored on the chain, one would need 2 pieces of information, the decryption key, and the block location. 
 
 ### Authentication Flow
 
@@ -60,7 +60,7 @@ With this in mind, the new authorisation flow is as follows.
 
 As mentioned previously, an issue with having a central ID provider is that the entire system is susceptible to a single failure point. However, this is not necessarily the case with Singpass. As mentioned in the Authentication Flow diagram, Singpass would act as a keystore. By caching the keys on the user device, we can maintain some level of functionality even if the central Singpass server were to fail. 
 
-The current version of the Singpass app allows users to log into the app and view their digital identification cards without having an internet connection. This means that at it's current state, it is already caching information for quick access. All of these is protected locally via biometric authentication. 
+The current version of the Singpass app allows users to log into the app and view their digital identification cards without having an internet connection. This means that at its current state, it is already caching information for quick access. All of these is protected locally via biometric authentication. 
 
 However, there is still impact to the current model if the central Singpass server were to go down. Namely, users would not be able to receive new keys. The event of issuing new keys which is likened to issuing of a new identity card is a less common and non-time critical event. Therefore, since the proposed authentication method with Singpass does not rely on the central server, the impact of failure is minimised. 
 
