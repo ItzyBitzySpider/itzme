@@ -68,5 +68,5 @@ However, there is still impact to the current model if the central Singpass serv
 
 To better understand the demo, please reference the READMEs in the 3 application folders. 
 
-[![demo](https://youtu.be/TWfbxpC3Svo)](https://youtu.be/TWfbxpC3Svo)
+[![demo](https://img.youtube.com/vi/TWfbxpC3Svo/maxresdefault.jpg)](https://youtu.be/TWfbxpC3Svo)
 
