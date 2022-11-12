@@ -20,10 +20,12 @@ class AuthService {
           options: const AuthenticationOptions(
             biometricOnly: false,
             useErrorDialogs: true,
-            stickyAuth: true,
+            stickyAuth: false,
           ),
         );
-      } on PlatformException catch (e) {}
+      } on PlatformException catch (e) {
+        print(e);
+      }
     }
     return isAuthenticated;
   }

@@ -16,7 +16,8 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
     Document(
       name: 'Vaccination Certificate',
       organization: Organization(name: 'Ministry of Health'),
-      date: DateTime(2022, 1, 25),
+      dateOfIssue: DateTime(2022, 1, 25),
+      jsonData: '',
     ),
   );
 
@@ -59,7 +60,7 @@ class _DocumentsScreenState extends State<DocumentsScreen> {
                         title: Text(document.name),
                         subtitle: Text(document.organization.name),
                         trailing: Text(
-                          formatter.format(document.date),
+                          formatter.format(document.dateOfIssue),
                           style: TextStyle(color: Colors.grey.shade600),
                         ),
                         // trailing: const Icon(Icons.chevron_right),

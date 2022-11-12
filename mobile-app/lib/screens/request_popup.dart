@@ -3,20 +3,20 @@ import 'package:itzme/models/document.dart';
 import 'package:itzme/models/organization.dart';
 import 'package:itzme/services/auth.dart';
 
-// Haven't tested on android, need to add android permissions
+// BUG: If you authenticate successfully, then cancel authentication a second time
+//      and press cancel, the app black screens
 
 Future<bool> showRequestPopup(
   BuildContext context, {
-  required Organization requestingOrganization,
-  required List<Document> documents,
-  required String purpose,
+  Organization? requestingOrganization,
+  required List<String> documents,
+  String? purpose,
 }) async {
   bool? result = await Navigator.of(context).push(MaterialPageRoute<bool>(
     builder: (BuildContext context) {
       return RequestPopup(
         requestingOrganization: requestingOrganization,
         documents: documents,
-        purpose: purpose,
       );
     },
     fullscreenDialog: true,
@@ -26,15 +26,13 @@ Future<bool> showRequestPopup(
 }
 
 class RequestPopup extends StatefulWidget {
-  final Organization requestingOrganization;
-  final List<Document> documents;
-  final String purpose;
+  final Organization? requestingOrganization;
+  final List<String> documents;
 
   const RequestPopup({
     super.key,
-    required this.requestingOrganization,
     required this.documents,
-    required this.purpose,
+    this.requestingOrganization,
   });
 
   @override
@@ -42,6 +40,23 @@ class RequestPopup extends StatefulWidget {
 }
 
 class _RequestPopupState extends State<RequestPopup> {
+  Widget _userIcon(String? iconPath) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      child: Container(
+        padding: const EdgeInsets.all(5.0),
+        height: 100.0,
+        width: 100.0,
+        child: iconPath == null
+            ? const FittedBox(
+                fit: BoxFit.fill,
+                child: Icon(Icons.account_circle),
+              )
+            : Image.asset(iconPath),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,23 +71,18 @@ class _RequestPopupState extends State<RequestPopup> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(5.0),
-                        height: 100.0,
-                        width: 100.0,
-                        child: widget.requestingOrganization.iconPath == null
-                            ? const Icon(Icons.school)
-                            : Image.asset(
-                                widget.requestingOrganization.iconPath!),
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _userIcon(null),
+                        const Icon(Icons.arrow_right_alt,
+                            size: 40.0, color: Colors.grey),
+                        _userIcon(widget.requestingOrganization?.iconPath),
+                      ],
                     ),
                     const SizedBox(height: 10.0),
                     Text(
-                      widget.requestingOrganization.name,
+                      widget.requestingOrganization?.name ?? 'Organization',
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 25.0,
@@ -80,7 +90,10 @@ class _RequestPopupState extends State<RequestPopup> {
                       ),
                     ),
                     const SizedBox(height: 10.0),
-                    Text('for ${widget.purpose}', textAlign: TextAlign.center),
+                    const Text(
+                      'requests your credentials.',
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 ),
               ),
@@ -116,11 +129,11 @@ class _RequestPopupState extends State<RequestPopup> {
                                 shrinkWrap: true,
                                 itemCount: widget.documents.length,
                                 itemBuilder: ((context, index) {
-                                  Document document = widget.documents[index];
+                                  String document = widget.documents[index];
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 1.0),
-                                    child: Text('• ${document.name}'),
+                                    child: Text('• $document'),
                                   );
                                 }),
                               ),

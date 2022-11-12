@@ -1,14 +1,15 @@
-import 'package:flutter/material.dart';
 import 'package:itzme/models/organization.dart';
 
 class Document {
   String name;
-  DateTime date;
+  DateTime dateOfIssue;
   Organization organization;
+  String jsonData;
 
   Document({
     required this.name,
-    required this.date,
+    required this.dateOfIssue,
     required this.organization,
+    required this.jsonData,
   });
 }
