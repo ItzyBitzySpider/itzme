@@ -14,6 +14,7 @@ export default function ExternalApp({ ip }) {
 	});
 	const [callback, setCallback] = useState('');
 	const [chainData, setChainData] = useState('');
+	const [decrypted, setDecrypted] = useState('');
 
 	useEffect(() => {
 		fetch('/api/socket').finally(() => {
@@ -29,11 +30,28 @@ export default function ExternalApp({ ip }) {
 			});
 
 			socket.on('keys', async (msg) => {
-				console.log(msg);
+				// console.log(msg);
 				setCallback(JSON.stringify(msg));
-				const blockData = await fetch('http://143.198.209.169:3000/getData?blockNo=0');
-				const json = await blockData.json()
+				console.log(msg);
+				const blockData = await fetch(
+					'http://143.198.209.169:3000/getData?blockNo=' + msg.txNo
+				);
+				const json = await blockData.json();
 				setChainData(JSON.stringify(json));
+
+				//post to /api/decrypt
+				const decrypt = await fetch('/api/decrypt', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({
+						encryptedData: json.data.data,
+						privateKey: msg.privateKey,
+					}),
+				});
+				const result = await decrypt.json();
+				setDecrypted(result);				
 			});
 
 			socket.on('disconnect', () => {
@@ -59,59 +77,82 @@ export default function ExternalApp({ ip }) {
 
 			<div className='h-2/3 flex flex-row w-screen'>
 				{callback === '' && (
-					<form className='h-full w-full flex flex-col items-center justify-center'>
-						<div>
-							<div className='w-50 text-4xl  text-white flex items-center p-5'>
-								<input
-									className='w-6 h-6 rounded-lg mr-5'
-									type='checkbox'
-									checked={name}
-									onChange={() => setName(!name)}
-									value='Name'
-									name='Name'
-								/>
-								<p>Name</p>
+					<>
+						<form className='h-full w-full flex flex-col items-center justify-center'>
+							<div>
+								<div className='w-50 text-4xl  text-white flex items-center p-5'>
+									<input
+										className='w-6 h-6 rounded-lg mr-5'
+										type='checkbox'
+										checked={name}
+										onChange={() => setName(!name)}
+										value='Name'
+										name='Name'
+									/>
+									<p>Name</p>
+								</div>
+								<div className='w-50 text-4xl  text-white flex items-center p-5'>
+									<input
+										className='w-6 h-6 rounded-lg mr-5'
+										type='checkbox'
+										checked={email}
+										onChange={() => setEmail(!email)}
+										value='Email'
+										name='Email'
+									/>
+									Email
+								</div>
+								<div className='w-50 text-4xl  text-white flex items-center p-5'>
+									<input
+										className='w-6 h-6 rounded-lg mr-5'
+										type='checkbox'
+										checked={nric}
+										onChange={() => setNric(!nric)}
+										value='NRIC'
+										name='NRIC'
+									/>
+									NRIC
+								</div>
 							</div>
-							<div className='w-50 text-4xl  text-white flex items-center p-5'>
-								<input
-									className='w-6 h-6 rounded-lg mr-5'
-									type='checkbox'
-									checked={email}
-									onChange={() => setEmail(!email)}
-									value='Email'
-									name='Email'
-								/>
-								Email
-							</div>
-							<div className='w-50 text-4xl  text-white flex items-center p-5'>
-								<input
-									className='w-6 h-6 rounded-lg mr-5'
-									type='checkbox'
-									checked={nric}
-									onChange={() => setNric(!nric)}
-									value='NRIC'
-									name='NRIC'
-								/>
-								NRIC
+						</form>
+						<div className='h-full w-full flex flex-col justify-center items-center'>
+							<div className='bg-white p-4'>
+								<QRCode size={512} value={JSON.stringify(info)} />
 							</div>
 						</div>
-					</form>
+					</>
 				)}
 				{callback !== '' && (
-					<div className='h-full w-full flex flex-col items-center justify-center'>
-						<textarea  rows={30} cols={50} className='rounded-2xl p-4 mt-10' value={callback}/>
-					</div>
-				)}
-				<div className='h-full w-full flex flex-col justify-center items-center'>
-					{callback === '' && (
-						<div className='bg-white p-4'>
-							<QRCode size={512} value={JSON.stringify(info)} />
+					<>
+						<div className='h-full w-full flex flex-col items-center justify-center'>
+							<textarea
+								rows={30}
+								cols={50}
+								className='rounded-2xl p-4 mt-10'
+								value={callback}
+								readOnly
+							/>
 						</div>
-					)}
-					{callback !== '' &&<div className='h-full w-full flex flex-col items-center justify-center'>
-						<textarea  rows={30} cols={50} className='rounded-2xl p-4 mt-10' value={chainData}/>
-					</div>}
-				</div>
+						<div className='h-full w-full flex flex-col items-center justify-center'>
+							<textarea
+								rows={30}
+								cols={50}
+								className='rounded-2xl p-4 mt-10'
+								value={chainData}
+								readOnly
+							/>
+						</div>
+						<div className='h-full w-full flex flex-col items-center justify-center'>
+							<textarea
+								rows={30}
+								cols={50}
+								className='rounded-2xl p-4 mt-10'
+								value={decrypted}
+								readOnly
+							/>
+						</div>
+					</>
+				)}
 			</div>
 		</div>
 	);

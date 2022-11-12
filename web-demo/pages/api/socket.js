@@ -12,7 +12,7 @@ const ioHandler = (req, res) => {
         socket.emit("hello", "world!");
       });
       socket.on("keys", (msg) => {
-        console.log(msg);
+        // console.log(msg);
         socket.broadcast.emit("keys", msg);
       });
     });
