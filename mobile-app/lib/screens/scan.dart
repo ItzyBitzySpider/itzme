@@ -1,12 +1,10 @@
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:itzme/models/document.dart';
-import 'package:itzme/models/organization.dart';
 import 'package:itzme/screens/request_popup.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-
-// THIS DOESN'T WORK
+import 'package:itzme/services/blockchain.dart';
+import 'package:itzme/widgets.dart/qr_overlay.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanScreen extends StatefulWidget {
   const ScanScreen({super.key});
@@ -16,34 +14,7 @@ class ScanScreen extends StatefulWidget {
 }
 
 class _ScanScreenState extends State<ScanScreen> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Barcode? result;
-  QRViewController? controller;
-
-  void _onQRViewCreated(QRViewController controller) {
-    this.controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
-    });
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    if (Platform.isAndroid) {
-      controller!.pauseCamera();
-    } else if (Platform.isIOS) {
-      controller!.resumeCamera();
-    }
-  }
-
-  @override
-  void dispose() {
-    controller?.dispose();
-    super.dispose();
-  }
+  bool authenticated = false;
 
   @override
   Widget build(BuildContext context) {
@@ -51,37 +22,30 @@ class _ScanScreenState extends State<ScanScreen> {
       body: Column(
         children: [
           Expanded(
-            child: QRView(
-              key: qrKey,
-              onQRViewCreated: _onQRViewCreated,
-            ),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              bool result = await showRequestPopup(
-                context,
-                purpose: 'Visitor Registration',
-                requestingOrganization: Organization(
-                  name: 'Punggol Polyclinic',
-                  iconPath: 'assets/images/moh_icon.png',
-                ),
-                documents: [
-                  Document(
-                    name: 'Vaccination Certificate',
-                    organization: Organization(name: 'Ministry of Health'),
-                    date: DateTime(2022, 1, 25),
-                  ),
-                  Document(
-                    name: 'Vaccination Certificate',
-                    organization: Organization(name: 'Ministry of Health'),
-                    date: DateTime(2022, 1, 25),
-                  ),
-                ],
-              );
+            child: Stack(
+              children: [
+                MobileScanner(
+                  allowDuplicates: false,
+                  onDetect: (barcode, args) async {
+                    if (barcode.rawValue == null) return;
 
-              print(result);
-            },
-            child: Text('popup'),
+                    Map<String, dynamic> decoded =
+                        json.decode(barcode.rawValue!);
+
+                    List<String> fields = [];
+                    decoded.forEach((key, value) {
+                      if (value is bool && value) fields.add(key);
+                    });
+
+                    bool authenticated =
+                        await showRequestPopup(context, documents: fields);
+
+                    if (authenticated) authorizeDetails(fields);
+                  },
+                ),
+                QRScannerOverlay(overlayColour: Colors.black.withOpacity(0.5)),
+              ],
+            ),
           ),
         ],
       ),

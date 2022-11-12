@@ -30,10 +30,10 @@ const List<BottomNavigationBarItem> _navigationBarItems = [
     icon: Icon(Icons.qr_code_scanner, size: 35.0),
     label: 'Scan',
   ),
-  BottomNavigationBarItem(
-    icon: Icon(Icons.folder, size: 35.0),
-    label: 'Documents',
-  ),
+  // BottomNavigationBarItem(
+  //   icon: Icon(Icons.folder, size: 35.0),
+  //   label: 'Documents',
+  // ),
 ];
 
 const List<Widget> _screens = [HomeScreen(), ScanScreen(), DocumentsScreen()];
