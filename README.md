@@ -64,5 +64,9 @@ The current version of the Singpass app allows users to log into the app and vie
 
 However, there is still impact to the current model if the central Singpass server were to go down. Namely, users would not be able to receive new keys. The event of issuing new keys which is likened to issuing of a new identity card is a less common and non-time critical event. Therefore, since the proposed authentication method with Singpass does not rely on the central server, the impact of failure is minimized. 
 
+## Demo Video
 
+To better understand the demo, please reference the READMEs in the 3 application folders. 
+
+[![demo](demo.mp4)](demo.mp4)
 
