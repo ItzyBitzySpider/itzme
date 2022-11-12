@@ -151,8 +151,7 @@ export class Chain {
 
 export class Issuer {
 	constructor(txNo, privateKey) {
-		const blockData = Chain.instance.find(txNo);
-		this.issuerId = blockData.data.issuerId;
+		this.issuerId = txNo;
 		this.privateKey = privateKey;
 	}
 
@@ -210,7 +209,7 @@ export class Issuer {
 		});
 		const blockData = {
 			issuerName: issuerName,
-			issuerId: Chain.instance.getIssuers().length,
+			issuerId: Chain.instance.chain.length,
 			createIssuer: createIssuer,
 			publicKey: keypair.publicKey,
 		};
