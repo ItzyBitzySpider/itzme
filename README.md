@@ -1,4 +1,4 @@
-# It'z Me
+![logo](itzme.png)
 
 ## About the Project
 
@@ -68,5 +68,5 @@ However, there is still impact to the current model if the central Singpass serv
 
 To better understand the demo, please reference the READMEs in the 3 application folders. 
 
-[![demo](demo.mp4)](demo.mp4)
+[![demo](https://youtu.be/TWfbxpC3Svo)](https://youtu.be/TWfbxpC3Svo)
 
