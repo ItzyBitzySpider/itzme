@@ -12,15 +12,15 @@ The solution is to adopt a decentralised model of doing trust attestation using 
 
 In this repository, you will find 3 folders. 
 
-1. [`blockchain`][/blockchain]
+1. [`blockchain`][blockchain/]
 
 This folder contains the code to deploy blockchain nodes, as well as an API to perform several functions on the chain. 
 
-2. [`mobile-app`][/blockchain]
+2. [`mobile-app`][blockchain/]
 
 This folder contians a mobile application meant to mimic the functionality of the Singpass app. It's purpose is to demonstrate the new authentication flow with the implementation of the blockchain. 
 
-3. [`web-demo`][/blockchain]
+3. [`web-demo`][blockchain/]
 
 This folder contains the code to deploy a web application that serves 2 purposes. Firstly, it contains a graphical interface for the API in `blockchain`. Secondly, it attempts to simulate how a third-party application would authenticate it's users via the blockchain and the mobile application. 
 
