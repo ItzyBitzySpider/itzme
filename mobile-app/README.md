@@ -3,9 +3,9 @@
 A simple mobile application for Android, built with [Flutter](https://flutter.dev).
 
 <p align="middle">
-  <img src="https://raw.githubusercontent.com/ItzyBitzySpider/itzme/master/mobile-app/docs/credentials.png" width="100" />
-  <img src="https://raw.githubusercontent.com/ItzyBitzySpider/itzme/master/mobile-app/docs/qr_code_scanner.png" width="100" /> 
-  <img src="https://raw.githubusercontent.com/ItzyBitzySpider/itzme/master/mobile-app/docs/popup.png" width="100" />
+  <img src="https://raw.githubusercontent.com/ItzyBitzySpider/itzme/master/mobile-app/docs/credentials.png" width="250" />
+  <img src="https://raw.githubusercontent.com/ItzyBitzySpider/itzme/master/mobile-app/docs/qr_code_scanner.png" width="250" /> 
+  <img src="https://raw.githubusercontent.com/ItzyBitzySpider/itzme/master/mobile-app/docs/popup.png" width="250" />
 </p>
 
 ## Repository Structure
