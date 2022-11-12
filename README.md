@@ -42,5 +42,5 @@ The services that we aim to decentralise are the MyInfo server and the Service A
 
 With this in mind, the new authorisation flow is as follows. 
 
-
+![new auth flow](newAuthFlow.png)
 
