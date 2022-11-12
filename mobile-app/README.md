@@ -9,7 +9,7 @@ A simple mobile application for Android, built with [Flutter](https://flutter.de
 </p>
 
 ## Repository Structure
-All relevant folders are in the `lib`, where all the code is organized into 4 folders.
+All relevant folders are in the `lib` folder, where everything is organized into 4 folders.
 
 1. [`models`](lib/models/)
 
@@ -22,9 +22,9 @@ This folder holds code for the UI of the application, and some basic application
 3. [`services`](lib/services/)
 
 The code in this folder lets the application connect and communicate with external applications and services. There are 3 services as of now:
-* ['auth.dart'](lib/services/auth.dart) - Authentication using PIN or biometrics
-* ['blockchain.dart](lib/services/blockchain.dart) - Sends and retrieves data from the blockchain server
-* ['hive.dart'](lib/services//hive.dart) - Handles the storage of data locally in the device
+* [`auth.dart`](lib/services/auth.dart) - Authentication using PIN or biometrics
+* [`blockchain.dart`](lib/services/blockchain.dart) - Sends and retrieves data from the blockchain server
+* [`hive.dart`](lib/services//hive.dart) - Handles the storage of data locally in the device
 
 4. [`widgets`](lib/widgets.dart/)
 
