@@ -33,7 +33,55 @@ The `myAddress` and `peerAddress` fields are required for the P2P functionality.
 
 After filling in these pieces of information, you can run the server with 
 
-```yarn run start```
+```
+yarn run start
+```
+
+## Chain
+
+The permissioned blockchain functions on the basis of trusted actors. To ensure only trusted issuers can write to the blockchain, all blocks have to be signed by the issuer. The public key to verify the signature exist on the blockchain during the creation of the issuer. 
+
+The structure of each block is as follows:
+```
+{
+    timestamp: int
+    lastHash: String
+    data: any
+    type: "IDENTITY" || "ISSUER"
+    issuerId: int
+    signature: Buffer
+    txNo: int
+}
+```
+
+#### `timestamp`
+
+This is when the block is created. Not when it was pushed. 
+
+#### `lastHash`
+
+Hash of the previous block. 
+
+#### `data`
+
+Depending on the type of block, this is either a Buffer (array of decimal values) representing the encrypted identity of a user, or a JSON with information pertaining to an issuer. 
+
+#### `type`
+
+There are only 2 possible values for this field. `IDENTITY` or `ISSUER`. An `IDENTITY` block is one created when an Identity is issued to a user, whereas an `ISSUER` block is added when a new issuer is created.
+
+#### `issuerId`
+
+This represents the block location of the Issuer who created the block. Using this, you can query the blockchain for the public key corresponding to the issuer. This is useful to verify the signature of the block. 
+
+#### `signature`
+
+Buffer data type. This signature helps to verify that the `data` is unchanged and created by the original issuer. Only the `data` field is signed. 
+
+#### `txNo`
+
+This is the transaction number of block number. It can be used to query the blockchain. This could be viewed as a block address, but not to be confused with the block hash. The block object contains a method to calculate the current block hash. However it is not stored in the blockchain.  
+
 
 ## Server 
 
@@ -67,3 +115,25 @@ This endpoint can be accesses by anyone. It queries the blockchain by blockNo.
 Method: `GET`  
 Parameters:
 `blockNo`: `int` 
+
+
+## P2P
+
+The P2P network operates using websockets. When a socket first connects, it will broadcast it's address the connecting node, which will forward it to all it's peers which repeats until all nodes receive the address. This meanst that the network should always be fully connected. There are 4types of messages communicated over the websockets. 
+
+#### `HANDSHAKE`
+
+This indicates that a node is trying to connect. Accompanying this message will be the address of the connecting node. On the reception of this message, the node will broadcast another `HANDSHAKE` message to the network with the connecting node's address and will reply the connecting node with a `HANDSHAKE` message contianing the addresses of its peers. 
+
+#### `NEW BLOCK`
+
+This indicates a new block is to be added to the chain. On the reception of this message, the node will first verify the integrity of this block, checking the `signature`, and the `lastHash` to ensure it is valid before pushing it to its chain. Upon adding, it will forward this message to all its peers. Duplication of message will not impact the integrity of the chain since the `lastHash` would be invalid. 
+
+#### `REQUEST CHAIN`
+
+This message request for the entire chain to be sent. This is usually send when a new node is connecting to the network. It follows shortly after the `HANDSHAKE` messgae. It request the chain history from node it is connecting to. On the reception of this message, the entire chain data will be sent to the requesting node. 
+
+#### `SEND CHAIN`
+
+This message indicates the chain history is being sent. 
+
