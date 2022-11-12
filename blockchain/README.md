@@ -33,7 +33,8 @@ The `myAddress` and `peerAddress` fields are required for the P2P functionality.
 
 After filling in these pieces of information, you can run the server with 
 
-```
+```bash
+yarn install
 yarn run start
 ```
 
