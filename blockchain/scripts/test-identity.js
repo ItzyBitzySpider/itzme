@@ -1,7 +1,7 @@
 import fetch from 'cross-fetch';
 import * as crypto from 'crypto';
 
-const url = "http://localhost:3000"
+const url = "http://143.198.209.169:3000"
 const result = await fetch(url+'/admin/issueIdentity?field=Name&value=Shin+Yuna')
 const json = await result.json()
 console.log(json.privateKey)

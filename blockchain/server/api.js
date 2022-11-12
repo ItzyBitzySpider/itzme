@@ -1,6 +1,8 @@
 import * as crypto from 'crypto';
 import express from 'express';
 import { Issuer, Chain } from '../chain/chain.js';
+//import cors
+import cors from 'cors';
 
 //read data from config.yml
 import * as fs from 'fs';
@@ -13,6 +15,7 @@ const issuer = new Issuer(
 
 //express server
 const app = express();
+app.use(cors());
 
 app.get('/', (req, res) => res.json({ message: 'Hello World!' }));
 

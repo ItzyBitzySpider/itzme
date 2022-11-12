@@ -10,8 +10,10 @@ export default function ExternalApp({ ip }) {
 		name: false,
 		email: false,
 		nric: false,
-		callbackURL: 'ws://'+ip+':3000',
+		callbackURL: 'ws://' + ip + ':3000',
 	});
+	const [callback, setCallback] = useState('');
+	const [chainData, setChainData] = useState('');
 
 	useEffect(() => {
 		fetch('/api/socket').finally(() => {
@@ -26,9 +28,12 @@ export default function ExternalApp({ ip }) {
 				console.log('a user connected');
 			});
 
-			socket.on('keys', (msg) => {
+			socket.on('keys', async (msg) => {
 				console.log(msg);
-				setInfo(JSON.stringify(msg));
+				setCallback(JSON.stringify(msg));
+				const blockData = await fetch('http://143.198.209.169:3000/getData?blockNo=0');
+				const json = await blockData.json()
+				setChainData(JSON.stringify(json));
 			});
 
 			socket.on('disconnect', () => {
@@ -46,58 +51,66 @@ export default function ExternalApp({ ip }) {
 			<button
 				className='text-2xl font-medium bg-orange-600 p-3 px-10 rounded-lg  text-white'
 				onClick={() => {
-					setInfo({ name, email, nric, callbackURL: 'ws://'+ip+':3000' });
+					setInfo({ name, email, nric, callbackURL: 'ws://' + ip + ':3000' });
 				}}>
 				Generate
 			</button>
-			<p className=' text-white'>{JSON.stringify(info)}</p>
+			{callback === '' && <p className=' text-white'>{JSON.stringify(info)}</p>}
+
 			<div className='h-2/3 flex flex-row w-screen'>
-				<form className='h-full w-full flex flex-col items-center justify-center'>
-					<div>
-						<div className='w-50 text-4xl  text-white flex items-center p-5'>
-							<input
-								className='w-6 h-6 rounded-lg mr-5'
-								type='checkbox'
-								checked={name}
-								onChange={() => setName(!name)}
-								value='Name'
-								name='Name'
-							/>
-							<p>Name</p>
+				{callback === '' && (
+					<form className='h-full w-full flex flex-col items-center justify-center'>
+						<div>
+							<div className='w-50 text-4xl  text-white flex items-center p-5'>
+								<input
+									className='w-6 h-6 rounded-lg mr-5'
+									type='checkbox'
+									checked={name}
+									onChange={() => setName(!name)}
+									value='Name'
+									name='Name'
+								/>
+								<p>Name</p>
+							</div>
+							<div className='w-50 text-4xl  text-white flex items-center p-5'>
+								<input
+									className='w-6 h-6 rounded-lg mr-5'
+									type='checkbox'
+									checked={email}
+									onChange={() => setEmail(!email)}
+									value='Email'
+									name='Email'
+								/>
+								Email
+							</div>
+							<div className='w-50 text-4xl  text-white flex items-center p-5'>
+								<input
+									className='w-6 h-6 rounded-lg mr-5'
+									type='checkbox'
+									checked={nric}
+									onChange={() => setNric(!nric)}
+									value='NRIC'
+									name='NRIC'
+								/>
+								NRIC
+							</div>
 						</div>
-						<div className='w-50 text-4xl  text-white flex items-center p-5'>
-							<input
-								className='w-6 h-6 rounded-lg mr-5'
-								type='checkbox'
-								checked={email}
-								onChange={() => setEmail(!email)}
-								value='Email'
-								name='Email'
-							/>
-							Email
-						</div>
-						<div className='w-50 text-4xl  text-white flex items-center p-5'>
-							<input
-								className='w-6 h-6 rounded-lg mr-5'
-								type='checkbox'
-								checked={nric}
-								onChange={() => setNric(!nric)}
-								value='NRIC'
-								name='NRIC'
-							/>
-							NRIC
-						</div>
+					</form>
+				)}
+				{callback !== '' && (
+					<div className='h-full w-full flex flex-col items-center justify-center'>
+						<textarea  rows={30} cols={50} className='rounded-2xl p-4 mt-10' value={callback}/>
 					</div>
-				</form>
+				)}
 				<div className='h-full w-full flex flex-col justify-center items-center'>
-					<div className='bg-white p-4'>
-						<QRCode
-							size={512}
-							// style={{ height: 'auto', maxWidth: '100%', width: '100%' }}
-							value={JSON.stringify(info)}
-							// viewBox={`0 0 256 256`}
-						/>
-					</div>
+					{callback === '' && (
+						<div className='bg-white p-4'>
+							<QRCode size={512} value={JSON.stringify(info)} />
+						</div>
+					)}
+					{callback !== '' &&<div className='h-full w-full flex flex-col items-center justify-center'>
+						<textarea  rows={30} cols={50} className='rounded-2xl p-4 mt-10' value={chainData}/>
+					</div>}
 				</div>
 			</div>
 		</div>
@@ -107,9 +120,9 @@ export default function ExternalApp({ ip }) {
 //nextjs serverside props
 export async function getServerSideProps(context) {
 	//get ip from gelocation api
-	const res = await fetch('https://api.ipify.org?format=json')
-  const json=await res.json();
-  const ip = json.ip
+	const res = await fetch('https://api.ipify.org?format=json');
+	const json = await res.json();
+	const ip = json.ip;
 	return {
 		props: { ip }, // will be passed to the page component as props
 	};
