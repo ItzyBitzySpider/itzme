@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:itzme/screens/documents.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:itzme/models/credentials.dart';
 import 'package:itzme/screens/home.dart';
 import 'package:itzme/screens/scan.dart';
+import 'package:itzme/services/hive.dart';
 
-void main() {
+void main() async {
+  // Initialize Hive for local storage
+  Hive.registerAdapter(CredentialsAdapter());
+
+  await Hive.initFlutter();
+
+  // Open boxes
+  await Hive.openBox('credentials');
+
   runApp(const MyApp());
 }
 
@@ -36,8 +46,6 @@ const List<BottomNavigationBarItem> _navigationBarItems = [
   // ),
 ];
 
-const List<Widget> _screens = [HomeScreen(), ScanScreen(), DocumentsScreen()];
-
 class Main extends StatefulWidget {
   const Main({super.key});
 
@@ -48,10 +56,43 @@ class Main extends StatefulWidget {
 class _MainState extends State<Main> {
   int _selectedIndex = 0;
 
+  Credentials? credential;
+  late List<Widget> _screens;
+
+  void refreshCredentials() {
+    List<Credentials> creds = getCredentials();
+    setState(() {
+      if (creds.isNotEmpty) {
+        credential = creds[0];
+      } else {
+        credential = null;
+      }
+    });
+  }
+
+  Widget _screen(int index) {
+    _screens = [
+      HomeScreen(
+        credentials: credential,
+        refreshCredentials: refreshCredentials,
+      ),
+      ScanScreen(credentials: credential),
+    ];
+
+    return _screens[index];
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    refreshCredentials();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: _screens[_selectedIndex],
+      body: _screen(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         items: _navigationBarItems,
         currentIndex: _selectedIndex,

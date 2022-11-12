@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:itzme/models/document.dart';
-import 'package:itzme/models/organization.dart';
 import 'package:itzme/services/auth.dart';
 
 // BUG: If you authenticate successfully, then cancel authentication a second time
@@ -8,15 +6,13 @@ import 'package:itzme/services/auth.dart';
 
 Future<bool> showRequestPopup(
   BuildContext context, {
-  Organization? requestingOrganization,
-  required List<String> documents,
+  required String field,
   String? purpose,
 }) async {
   bool? result = await Navigator.of(context).push(MaterialPageRoute<bool>(
     builder: (BuildContext context) {
       return RequestPopup(
-        requestingOrganization: requestingOrganization,
-        documents: documents,
+        field: field,
       );
     },
     fullscreenDialog: true,
@@ -26,13 +22,11 @@ Future<bool> showRequestPopup(
 }
 
 class RequestPopup extends StatefulWidget {
-  final Organization? requestingOrganization;
-  final List<String> documents;
+  final String field;
 
   const RequestPopup({
     super.key,
-    required this.documents,
-    this.requestingOrganization,
+    required this.field,
   });
 
   @override
@@ -77,22 +71,28 @@ class _RequestPopupState extends State<RequestPopup> {
                         _userIcon(null),
                         const Icon(Icons.arrow_right_alt,
                             size: 40.0, color: Colors.grey),
-                        _userIcon(widget.requestingOrganization?.iconPath),
+                        _userIcon(null),
                       ],
                     ),
                     const SizedBox(height: 10.0),
-                    Text(
-                      widget.requestingOrganization?.name ?? 'Organization',
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w600,
+                    // Text(
+                    //   'An organization',
+                    //   textAlign: TextAlign.center,
+                    //   style: const TextStyle(
+                    //     fontSize: 25.0,
+                    //     fontWeight: FontWeight.w600,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 10.0),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(
+                        'An organization requests your credentials.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20.0,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 10.0),
-                    const Text(
-                      'requests your credentials.',
-                      textAlign: TextAlign.center,
                     ),
                   ],
                 ),
@@ -127,13 +127,12 @@ class _RequestPopupState extends State<RequestPopup> {
                               const SizedBox(height: 5.0),
                               ListView.builder(
                                 shrinkWrap: true,
-                                itemCount: widget.documents.length,
+                                itemCount: 1,
                                 itemBuilder: ((context, index) {
-                                  String document = widget.documents[index];
                                   return Padding(
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 1.0),
-                                    child: Text('• $document'),
+                                    child: Text('• ${widget.field}'),
                                   );
                                 }),
                               ),

@@ -27,6 +27,8 @@ class AuthService {
         print(e);
       }
     }
+
+    print(isAuthenticated);
     return isAuthenticated;
   }
 }
