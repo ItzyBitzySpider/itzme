@@ -4,9 +4,9 @@
 
 (This project is developed as part of GovTech's Stack The Codes 2022 Hackathon)
 
-It'z Me is a permissioned blockchain used to store digital identities. The concept of It'z Me is developed with the intention to integrate together with Singapore's existing National Digital Identity , [Singpass](https://www.singpass.gov.sg/main/singpass-our-ndi). As it stands, Singpass is a centralised ID provider. In the event that it is made unavailable and rendered non-recoverable, it will no longer be able to perform trust attestation or authentication of users and devices. 
+It'z Me is a permissioned blockchain used to store digital identities. The concept of It'z Me is developed with the intention to integrate together with Singapore's existing National Digital Identity, [Singpass](https://www.singpass.gov.sg/main/singpass-our-ndi). As it stands, Singpass is a centralized ID provider. In the event that it is made unavailable and rendered non-recoverable, it will no longer be able to perform trust attestation or authentication of users and devices. 
 
-The solution is to adopt a decentralised model of doing trust attestation using a blockchain. However, we recognise that there are many benefits of having a central authority. The It'z Me permissioned blockchain aims to preserve the benefits of both methods. 
+The solution is to adopt a decentralized model of doing trust attestation using a blockchain. However, we recognize that there are many benefits of having a central authority. The It'z Me permissioned blockchain aims to preserve the benefits of both methods. 
 
 ## Repository Structure
 
@@ -32,13 +32,13 @@ For more detailed explanation, look into the individual application folders.
 
 Public blockchains allow anyone to access them. They are built with the assumption of zero-trust of individual actors. Private blockchains on the other hand are completely closed off. Participants are all known to each other. Permissioned blockchains on the other hand are a hybrid of public and private blockchains. 
 
-It'z Me is built with the assumption of trust for a handful of partipants in the chain. These trusted individuals have write access to the blockchain. They are the authorities issuing identities to users. In other words, they are, in most cases, large government organizations. 
+It'z Me is built with the assumption of trust for a handful of participants in the chain. These trusted individuals have write access to the blockchain. They are the authorities issuing identities to users. In other words, they are, in most cases, large government organizations. 
 
-Issuers are the entities who are creating identities for users. The Genisis block of the blockchain will create the first "issuer". The Genisis Issuer would have the authority to not only issue identities but also create new issuers. Although issuers are assumed to be trusted, they need not be granted the authority to further create issuers. 
+Issuers are the entities who are creating identities for users. The Genesis block of the blockchain will create the first "issuer". The Genesis Issuer would have the authority to not only issue identities but also create new issuers. Although issuers are assumed to be trusted, they need not be granted the authority to further create issuers. 
 
 ### Storage of Identities
 
-The blockchain replaces the MyInfo resource server, enabling decentralised storage of information. Unlike more popular blockchains like Bitcoin and Ethereum, each block only contains a single transaction. Since all writers to the blockchain are trusted, there is no need for a PoW or PoS function to hinder write access. Since the data being stored is sensitive, the data stored on the blockchain is first encrypted. This means that to retreive an identity stored on the chain, one would need 2 pieces of information, the decryption key, and the block location. 
+The blockchain replaces the MyInfo resource server, enabling decentralized storage of information. Unlike more popular blockchains like Bitcoin and Ethereum, each block only contains a single transaction. Since all writers to the blockchain are trusted, there is no need for a PoW or PoS function to hinder write access. Since the data being stored is sensitive, the data stored on the blockchain is first encrypted. This means that to retrieve an identity stored on the chain, one would need 2 pieces of information, the decryption key, and the block location. 
 
 ### Authentication Flow
 
@@ -50,9 +50,9 @@ From the above, we can understand the various services in play in every authenti
 
 ![Auth sequence](https://public.cloud.myinfo.gov.sg/images/myinfo-rebrand-sequence-diagram.png)
 
-The services that we aim to decentralise are the MyInfo server and the Service Authorisation API. The centralisation of services around Singpass is a desirable trait that promotes ease of use. Since this is a National Identity system, accessibility and usuability is a key consideration to ensure the less tech-savy can still take full advantage of the application features. 
+The services that we aim to decentralize are the MyInfo server and the Service Authorization API. The centralization of services around Singpass is a desirable trait that promotes ease of use. Since this is a National Identity system, accessibility and usability is a key consideration to ensure the less tech-savy can still take full advantage of the application features. 
 
-With this in mind, the new authorisation flow is as follows. 
+With this in mind, the new authorization flow is as follows. 
 
 ![new auth flow](newAuthFlow.png)
 
@@ -62,7 +62,7 @@ As mentioned previously, an issue with having a central ID provider is that the 
 
 The current version of the Singpass app allows users to log into the app and view their digital identification cards without having an internet connection. This means that at its current state, it is already caching information for quick access. All of these is protected locally via biometric authentication. 
 
-However, there is still impact to the current model if the central Singpass server were to go down. Namely, users would not be able to receive new keys. The event of issuing new keys which is likened to issuing of a new identity card is a less common and non-time critical event. Therefore, since the proposed authentication method with Singpass does not rely on the central server, the impact of failure is minimised. 
+However, there is still impact to the current model if the central Singpass server were to go down. Namely, users would not be able to receive new keys. The event of issuing new keys which is likened to issuing of a new identity card is a less common and non-time critical event. Therefore, since the proposed authentication method with Singpass does not rely on the central server, the impact of failure is minimized. 
 
 
 
