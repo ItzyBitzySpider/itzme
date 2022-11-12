@@ -35,4 +35,35 @@ After filling in these pieces of information, you can run the server with
 
 ```yarn run start```
 
+## Server 
 
+This project implements an API for external applications (like you will see in the [`web-demo`](../web-demo/) folder, and a P2P network. The API has 3 functions
+
+- `/admin/createIssuer`
+
+This creates a new Issuer. For the purposes of demostration, this endpoint is made public. Only a priviledged issuer is able to run this function. The return of this function is the blockNo, and the privateKey used to sign blocks pushed to the chain. 
+
+Method: `GET`  
+Parameters:
+`name`: `String`  
+`createIssuer`: `Boolean`
+
+Method: `GET`
+
+- `/admin/issueIdentity`
+
+This function can only be ran by an issuer. For the purposes of demostration, this endpoint is made public. The issuer should posess a privateKey used to sign the block data before broadcasting it to the P2P network. If the block is not signed, other nodes will not accept the push. If it's signed, but the issuer public key is not found in the hisotry of the chain, then it is also invalid. 
+
+Method: `GET`  
+Parameters:
+`field`: `String` 
+`value`: `String`
+
+
+- `/getData`
+
+This endpoint can be accesses by anyone. It queries the blockchain by blockNo. 
+
+Method: `GET`  
+Parameters:
+`blockNo`: `int` 
