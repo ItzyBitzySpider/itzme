@@ -6,7 +6,7 @@ There are 3 relevant folders.
 
 1. [`chain`](chain/)
 
-This contains the core blockchain code. In there you'll find all the declarations of objects, and methods to maintain the integrity of the blockchain. To enable the P2P features of the blockchain, it will import methods from `server`.  
+This contains the core blockchain code. In there you'll find all the declarations of objects, and methods to maintain the integrity of the blockchain. To enable the P2P features of the blockchain, it will import methods from `./server/`.  
 
 2. [`scripts`](scripts/)
 
