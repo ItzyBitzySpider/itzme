@@ -19,7 +19,9 @@ app.get('/admin/issueIdentity', async (req, res) => {
 		res.json({'message':'No Issuer'});
 		return;
 	}
-    const result = await issuer.issueIdentity({'IdentityNumber':0, 'Name':'John Doe'});
+	const field = req.query.field;
+	const value = req.query.value;
+    const result = await issuer.issueIdentity({'field': field, 'value':value});
 	if (result[1] === -1) {
 		res.json({'message':'Error. Signature Invalid.'});
 		return;
@@ -55,7 +57,7 @@ app.get('/getData', async (req, res) => {
 		res.json({'message':'Block not found'});
 		return;
 	}
-	res.json({result});
+	res.json(result);
 });
 
 // app.listen(port, () => console.log(`Example app listening on port ${port}!`));
