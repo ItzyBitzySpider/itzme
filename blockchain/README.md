@@ -29,7 +29,7 @@ peerAddress: "ws://<peer remote address>:3000"
 ```
 
 The `txNo` and `privateKey` is required to intialise the Genesis block. If this is not the first node you're deploying, you will need to obtain the `privateKey` and `txNo` from another Issuer Node to be an Issuer. Leaving it blank will mean you only have read access to the blockchain.
-The `myAddress` and `peerAddress` fields are required for the P2P functionality. If this is the first node, `peerAddress` can be left empty. 
+The `myAddress` and `peerAddress` fields are required for the P2P functionality. If you deploy multiple nodes on the same server, the nodes might fail to communicate as the IP address is used to differentiate between itself and other nodes. If this is the first node, `peerAddress` can be left empty. 
 
 After filling in these pieces of information, you can run the server with 
 
